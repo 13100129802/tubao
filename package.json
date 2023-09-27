@@ -1,0 +1,10 @@
+{
+  "name": "tubao",
+  "compilerVersion": "5.3.10",
+  "typings": "bin/tubao.d.ts",
+  "devDependencies": {
+    "gulp-typedoc": "^3.0.2",
+    "typedoc": "^0.22.10",
+    "typedoc-plugin-markdown": "^3.16.0"
+  }
+}

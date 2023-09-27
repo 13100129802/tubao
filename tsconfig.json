@@ -1,0 +1,18 @@
+{
+	"compilerOptions": {
+		"target": "es5",
+		"noImplicitAny": false,
+		"sourceMap": false,
+		"declaration": true,
+		"outFile": "bin/tubao.js",
+		"lib":[            
+			"es5",
+            "dom",
+            "es2015.promise"]
+		
+	},
+	"include": [
+        "libs/**/*.d.ts",
+		"src"
+	]
+}
