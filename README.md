@@ -30,7 +30,7 @@
 
 * 考虑到白鹭引擎现在已经停止服务，建议通过这位大神的白鹭站点首先完成白鹭引擎的安装部署 [网上大神的白鹭引擎支持站](https://egret.pages.dev/) 
 
-* 下载仓库中的tubao文件夹，放到你的白鹭工程同目录中![image-20230927180506460](G:.\docs\img\yansi)
+* 下载仓库中的tubao文件夹，放到你的白鹭工程同目录中![示例](G:.\docs\img\yansi.jpg)
 
 * 配置你的白鹭工程中的**egretProperties.json**文件添加配置目录，指向包含bin文件夹内容的工程目录
 
@@ -57,7 +57,7 @@ Egret 项目使用 TypeScirpt 语言来开发。TypeScript 是 JavaScript 的超
 在下载完成的工程实例中，游戏项目的入口类默认在src/Main.ts里面，不过为了方便起见你可以直接在game.ts中添加代码。下面编写我们的项目的第一行代码,在默认的代码中找到addPopup()函数，修改为```new tubao.base.popup(`basics0${tubao.algo.tool.scoueRandom(1, 9)}_png`, "你好，世界！");```,然后就变成了下面的样子：
 
 ```typescript
-	/**
+    /**
      * 添加弹窗
      */
     public addPopup() {
