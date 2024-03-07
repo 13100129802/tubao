@@ -81,14 +81,14 @@ Egret 项目使用 TypeScirpt 语言来开发。TypeScript 是 JavaScript 的超
 
 目前应用兔宝脚本的实际产品《兔宝世界》轻度休闲养成社区游戏：
 ![](./docs/img/game.png)
-在线体验地址请点击：[体验地址](https://www.tubsj.top)<br/>
+在线体验地址请点击：[体验地址](https://www.tubao.cc)<br/>
 
-查看更多示例，请期待兔宝核芯官网：[兔宝核芯官网](https://core.tubsj.top)<br/>
+查看更多示例，请期待兔宝核芯官网：[兔宝核芯官网](https://core.tubao.cc)<br/>
 
 # 学习
 
-* 访问 [使用文档](http://core.tubsj.top/doc.html) 获取框架的使用文档
-* 访问 [API](http://core.tubsj.top/api/index.html) 获取 API 使用文档
+* 访问 [使用文档](http://core.tubao.cc/doc.html) 获取框架的使用文档
+* 访问 [API](http://core.tubao.cc/api/index.html) 获取 API 使用文档
 
 
 
