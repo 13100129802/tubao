@@ -1,9 +1,3 @@
-//Copyright <2023> <李向鹏>
-//Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
-//1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
-//2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-//THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS “AS IS” AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 declare module tubao.base {
     /**
      * 面板基础类，提供面板窗口实现逻辑
@@ -32,163 +26,6 @@ declare module tubao.base {
          * 关闭面板
          */
         close(...param: any[]): void;
-    }
-}
-declare module tubao.Appli {
-    /**条状提示模块 */
-    var hint: tubao.base.hint;
-}
-declare module tubao.utils {
-    /**
-     * 让显示对象可以拖动
-     * @param {egret.DisplayObject} display 显示对象
-     * @param {egret.DisplayObject} arr 显示对象连带扩展
-     */
-    function dragDisplauy(display: egret.DisplayObject, ...arr: any[]): void;
-    /**
-     * 继承后显示对象可拖动
-     */
-    class drag extends eui.Component {
-        private _touchStatus;
-        private _distance;
-        constructor();
-        /**
-         * 卸载时清除
-         */
-        private removed();
-        /**
-         * 按下手指
-         */
-        private mouseDown(evt);
-        /**
-         * 滑动屏幕
-         */
-        private mouseMove(evt);
-        /**
-         * 抬起手指
-         */
-        private mouseUp(evt);
-    }
-}
-declare namespace tubao.DB {
-    /**
-     * 龙骨功能基类-提供底层支持功能
-     * 提供骨架，骨节，插槽的显示对象获取，活动状态的设置，操作对象的获取
-     */
-    class DBbasice extends eui.Component {
-        /**创建一个龙骨工厂 */
-        private dbFactory;
-        /**龙骨数据解析，骨架数据 */
-        private dbBonesData;
-        /**解析图集数据，图片纹理切图数据，图片纹理像素数据 */
-        private dbtexureData;
-        /**龙骨项目所有骨架 */
-        skeleton: {};
-        /**资源名字 */
-        dbName: string;
-        showSkeleton: any;
-        activitySkeleton: any;
-        /**初始化完成 */
-        initYes: boolean;
-        /**龙骨数据列表 */
-        dbDataList: {};
-        /**
-         * 初始化龙骨工厂
-         * @param {string} name 龙骨项目名字
-         * @param {boolean} lodinYes 是否加载
-         */
-        constructor(name: string, lodinYes?: boolean);
-        /**
-         * 替换当前项目插槽内容用外部项目的指定插槽
-         * @param {string} dragonBonesName 外部项目名字，DragonBonesData 实例的缓存名称
-         * @param {string} armatureName 骨架数据名称。
-         * @param {string} slotName 插槽数据名称。
-         * @param {string} displayName 显示对象数据名称。
-         * @param {dragonBones.Slot} slot 指定的插槽
-         * @param {number} displayIndex 被替换的显示对象数据的索引。 （如果未设置，则替换当前的显示对象数据）
-         */
-        thisDBSlotReplaceOutsideDBSlot(dragonBonesName: string, armatureName: string, slotName: string, displayName: string, slot: dragonBones.Slot, displayIndex?: number): void;
-        /**
-         * 资源加载
-         * @param {string} name 龙骨项目名字
-         */
-        lodin(name: string): void;
-        /**
-         * 设置当前骨架是否翻转
-         */
-        flipSkeleton(skeletonName: string, type: boolean): void;
-        /**
-         * 全部骨架翻转设置
-         * @param flip 翻转正反向
-         * @param type 是否理顺
-         */
-        flip(flip: boolean, type?: boolean): void;
-        /**
-         * 设置当前骨骼的动画播放速度
-         * @param skeletonName 骨架名字
-         * @param speed 速度
-         */
-        speedSkeleton(skeletonName: string, speed: number): void;
-        /**
-         * 设置全部骨骼播放速度
-         * @param speed 速度
-         */
-        speed: number;
-        _scale: number;
-        /**
-         * 全体骨架缩放
-         * @param num 缩放倍数
-         */
-        /**
-         * 全体骨架缩放
-         * @param num 缩放倍数
-         */
-        scale: number;
-        /**
-         * 根据名字进行骨架缩放
-         * @param skeletonName 骨架名字
-         */
-        scaleSetSkeletonName(skeletonName: string, num: number): void;
-        /**
-         * 骨架显示隐藏
-         * @param skeletonName 骨架名字
-         * @param type 显示隐藏
-         */
-        skeletonVisible(skeletonName: string, type: boolean): void;
-        /**
-         * 根据名字获取到骨架显示对象
-         * @param skeletonName 骨架名字
-         */
-        displaySkeleton(skeletonName: string): egret.DisplayObject;
-        /**
-         * 根据名字获取到插槽显示对象
-         * @param skeletonName 骨架名字
-         * @param slotName 插槽名字
-         */
-        displaySlot(skeletonName: string, slotName: string): egret.Bitmap;
-        /**
-         * 根据名字获取到骨节坐标系偏移变换
-         * @param skeletonName 骨架名字
-         * @param slotName 骨节名字
-         */
-        displayBone(skeletonName: string, boneName: string): dragonBones.Transform;
-        /**
-         * 根据名字获取插槽对象
-         * @param skeletonName 骨架名字
-         * @param slotName 插槽名字
-         */
-        nameGetSlot(skeletonName: string, slotName: string): dragonBones.Slot;
-        /**
-         * 根据名字获取骨节对象
-         * @param skeletonName 骨架名字
-         * @param boneName 骨骼节点名字
-         */
-        nameGetBone(skeletonName: string, boneName: string): dragonBones.Bone;
-        /**
-         * 根据名字获取骨架对象
-         * @param skeletonName 骨架名字
-         */
-        nameGetSkeleton(skeletonName: string): dragonBones.Armature;
     }
 }
 /**
@@ -281,6 +118,83 @@ declare namespace tubao.editor {
         verDisplay(): boolean;
     }
 }
+declare namespace tubao.sound {
+    /**
+     * Created by yangsong on 15-1-14.
+     * Sound基类
+     */
+    class BaseSound {
+        _cache: any;
+        _loadingCache: Array<string>;
+        /**
+         * 构造函数
+         */
+        constructor();
+        /**
+         * 处理音乐文件的清理
+         */
+        private dealSoundTimer();
+        /**
+         * 获取Sound
+         * @param key
+         * @returns {egret.Sound}
+         */
+        getSound(key: string): egret.Sound;
+        /**
+         * 资源加载完成
+         * @param event
+         */
+        private onResourceLoadComplete(data, key);
+        /**
+         * 资源加载完成后处理播放，子类重写
+         * @param key
+         */
+        loadedPlay(key: string): void;
+        /**
+         * 检测一个文件是否要清除，子类重写
+         * @param key
+         * @returns {boolean}
+         */
+        checkCanClear(key: string): boolean;
+    }
+}
+declare namespace tubao.layer {
+    /**
+     * EUI层
+     */
+    class layer extends eui.UILayer {
+        constructor();
+    }
+}
+declare namespace tubao.fields {
+    /**
+     * 兔宝富文本包装器
+     */
+    class richTextFiledBase extends egret.DisplayObjectContainer {
+        /**文本 */
+        _textfiled: egret.TextField;
+        /**
+         * 兔宝富文本基础
+         * @param {EmojiPlugin} emogi 文本管理插件
+         */
+        constructor();
+        readonly text: string;
+        twidth: number;
+        theight: number;
+        readonly textWidth: number;
+        readonly textHeight: number;
+        readonly textFlow: egret.ITextElement[];
+        textAlign: string;
+        size: number;
+        textColor: number;
+        stroke: number;
+        strokeColor: number;
+        lineSpacing: number;
+        bold: boolean;
+        italic: boolean;
+        fontFamily: string;
+    }
+}
 declare namespace tubao.paint {
     /**
      * 绘画工具箱
@@ -362,137 +276,186 @@ declare namespace tubao.paint {
         getTexture(bitmapX: number, bitmapY: number, width: number, height: number, display: egret.DisplayObject): egret.RenderTexture;
     }
 }
-declare namespace tubao.fields {
+declare namespace tubao.DB {
     /**
-     * 兔宝富文本包装器
+     * 龙骨功能基类-提供底层支持功能
+     * 提供骨架，骨节，插槽的显示对象获取，活动状态的设置，操作对象的获取
      */
-    class richTextFiledBase extends egret.DisplayObjectContainer {
-        /**文本 */
-        _textfiled: egret.TextField;
+    class DBbasice extends eui.Component {
+        /**创建一个龙骨工厂 */
+        private dbFactory;
+        /**龙骨数据解析，骨架数据 */
+        private dbBonesData;
+        /**解析图集数据，图片纹理切图数据，图片纹理像素数据 */
+        private dbtexureData;
+        /**龙骨项目所有骨架 */
+        skeleton: {};
+        /**资源名字 */
+        dbName: string;
+        showSkeleton: any;
+        activitySkeleton: any;
+        /**初始化完成 */
+        initYes: boolean;
+        /**龙骨数据列表 */
+        dbDataList: {};
         /**
-         * 兔宝富文本基础
-         * @param {EmojiPlugin} emogi 文本管理插件
+         * 初始化龙骨工厂
+         * @param {string} name 龙骨项目名字
+         * @param {boolean} lodinYes 是否加载
          */
-        constructor();
-        readonly text: string;
-        twidth: number;
-        theight: number;
-        readonly textWidth: number;
-        readonly textHeight: number;
-        readonly textFlow: egret.ITextElement[];
-        textAlign: string;
-        size: number;
-        textColor: number;
-        stroke: number;
-        strokeColor: number;
-        lineSpacing: number;
-        bold: boolean;
-        italic: boolean;
-        fontFamily: string;
+        constructor(name: string, lodinYes?: boolean);
+        /**
+         * 替换当前项目插槽内容用外部项目的指定插槽
+         * @param {string} dragonBonesName 外部项目名字，DragonBonesData 实例的缓存名称
+         * @param {string} armatureName 骨架数据名称。
+         * @param {string} slotName 插槽数据名称。
+         * @param {string} displayName 显示对象数据名称。
+         * @param {dragonBones.Slot} slot 指定的插槽
+         * @param {number} displayIndex 被替换的显示对象数据的索引。 （如果未设置，则替换当前的显示对象数据）
+         */
+        thisDBSlotReplaceOutsideDBSlot(dragonBonesName: string, armatureName: string, slotName: string, displayName: string, slot: dragonBones.Slot, displayIndex?: number): void;
+        /**
+         * 资源加载
+         * @param {string} name 龙骨项目名字
+         */
+        lodin(name: string): void;
+        _flip: boolean;
+        /**
+         * 设置当前骨架是否翻转
+         */
+        flipSkeleton(skeletonName: string, type: boolean): void;
+        /**
+         * 全部骨架翻转设置
+         * @param {boolean} type 是否翻转
+         */
+        /**
+         * 全部骨架翻转设置
+         * @param {boolean} type 是否翻转
+         */
+        flip: boolean;
+        /**
+         * 设置当前骨骼的动画播放速度
+         * @param skeletonName 骨架名字
+         * @param speed 速度
+         */
+        speedSkeleton(skeletonName: string, speed: number): void;
+        /**
+         * 设置全部骨骼播放速度
+         * @param speed 速度
+         */
+        speed: number;
+        _scale: number;
+        /**
+         * 全体骨架缩放
+         * @param num 缩放倍数
+         */
+        /**
+         * 全体骨架缩放
+         * @param num 缩放倍数
+         */
+        scale: number;
+        /**
+         * 根据名字进行骨架缩放
+         * @param skeletonName 骨架名字
+         */
+        scaleSetSkeletonName(skeletonName: string, num: number): void;
+        /**
+         * 骨架显示隐藏
+         * @param skeletonName 骨架名字
+         * @param type 显示隐藏
+         */
+        skeletonVisible(skeletonName: string, type: boolean): void;
+        /**
+         * 根据名字获取到骨架显示对象
+         * @param skeletonName 骨架名字
+         */
+        displaySkeleton(skeletonName: string): egret.DisplayObject;
+        /**
+         * 根据名字获取到插槽显示对象
+         * @param skeletonName 骨架名字
+         * @param slotName 插槽名字
+         */
+        displaySlot(skeletonName: string, slotName: string): egret.Bitmap;
+        /**
+         * 根据名字获取到骨节坐标系偏移变换
+         * @param skeletonName 骨架名字
+         * @param slotName 骨节名字
+         */
+        displayBone(skeletonName: string, boneName: string): dragonBones.Transform;
+        /**
+         * 根据名字获取插槽对象
+         * @param skeletonName 骨架名字
+         * @param slotName 插槽名字
+         */
+        nameGetSlot(skeletonName: string, slotName: string): dragonBones.Slot;
+        /**
+         * 根据名字获取骨节对象
+         * @param skeletonName 骨架名字
+         * @param boneName 骨骼节点名字
+         */
+        nameGetBone(skeletonName: string, boneName: string): dragonBones.Bone;
+        /**
+         * 根据名字获取骨架对象
+         * @param skeletonName 骨架名字
+         */
+        nameGetSkeleton(skeletonName: string): dragonBones.Armature;
     }
 }
-declare namespace tubao.layer {
+declare module tubao.utils {
     /**
-     * EUI层
+     * 让显示对象可以拖动
+     * @param {egret.DisplayObject} display 显示对象
+     * @param {egret.DisplayObject} arr 显示对象连带扩展
      */
-    class layer extends eui.UILayer {
+    function dragDisplauy(display: egret.DisplayObject, ...arr: any[]): void;
+    /**
+     * 继承后显示对象可拖动
+     */
+    class drag extends eui.Component {
+        private _touchStatus;
+        private _distance;
         constructor();
+        /**
+         * 卸载时清除
+         */
+        private removed();
+        /**
+         * 按下手指
+         */
+        private mouseDown(evt);
+        /**
+         * 滑动屏幕
+         */
+        private mouseMove(evt);
+        /**
+         * 抬起手指
+         */
+        private mouseUp(evt);
     }
 }
-declare namespace tubao.sound {
-    /**
-     * Created by yangsong on 15-1-14.
-     * Sound基类
-     */
-    class BaseSound {
-        _cache: any;
-        _loadingCache: Array<string>;
-        /**
-         * 构造函数
-         */
-        constructor();
-        /**
-         * 处理音乐文件的清理
-         */
-        private dealSoundTimer();
-        /**
-         * 获取Sound
-         * @param key
-         * @returns {egret.Sound}
-         */
-        getSound(key: string): egret.Sound;
-        /**
-         * 资源加载完成
-         * @param event
-         */
-        private onResourceLoadComplete(data, key);
-        /**
-         * 资源加载完成后处理播放，子类重写
-         * @param key
-         */
-        loadedPlay(key: string): void;
-        /**
-         * 检测一个文件是否要清除，子类重写
-         * @param key
-         * @returns {boolean}
-         */
-        checkCanClear(key: string): boolean;
-    }
+declare module tubao.Appli {
+    /**条状提示模块 */
+    var hint: tubao.base.hint;
 }
 /**
- * 遥感
+ * 闪光效果工具模块
  */
-declare namespace tubao.joyStick {
-    class joyStickEvent {
-        /** 摇杆按下开始接受事件时候派发 */
-        static EVENT_JOY_START: string;
-        /** 触摸抬起后出发摇杆本次摇杆事件结束 */
-        static EVENT_JOY_END: string;
-        /** 摇杆角度改变时候派发 */
-        static EVENT_JOY_CHANGE: string;
-        /** 初始化摇杆完成后触发 */
-        static EVENT_INIT_COMPLETE: string;
-    }
-    class joyStickType {
-        /** 四方位 */
-        static TYPE_FOUR: number;
-        /** 八方为 */
-        static TYPE_EIGHT: number;
-    }
-    class JoyStickComponent extends eui.Component {
-        private _joybg;
-        private _joyStick;
-        private _minAlpha;
-        private _maxAlpha;
-        private _angle;
-        private _bgRadius;
-        private _joyRadius;
-        private _mouseX;
-        private _mouseY;
-        private _initJoyPoint;
-        private _type;
-        private _touchID;
-        private _isSkinFlag;
-        /**
-         * 初始化摇杆参数
-         * @param type 方向为定义在 joyStickType类下 目前仅实现八方为
-         * @param joyBg 摇杆背景纹理(可选)
-         * @param joyStick 摇杆纹理(可选)
-         * @param skin //皮肤文件(可选)如果用exml必须满足 有_joybg和_joyStick两个eui.image控件
-         */
-        constructor(type: number, joyBg?: egret.Texture, joyStick?: egret.Texture, skin?: any);
-        childrenCreated(): void;
-        private onTouchBegin(e);
-        private onTouchMove(e);
-        private onTouchEnd(e);
-        showJoy(callBack: () => void): void;
-        endJoy(callBack: () => void): void;
-        /**
-         * 获取当前角度信息
-         */
-        getAngle(): number;
-        destroy(): void;
-    }
+declare namespace tubao.Effect.flash {
+    /**
+     * 开始发光闪烁
+     * @param obj
+     */
+    function startFlash(obj: egret.DisplayObject, flashColor: number, flashTime: number): void;
+    /**
+     * 停止发光闪烁
+     * @param obj
+     */
+    function stopFlash(obj: egret.DisplayObject): void;
+    /**
+     * 发光闪烁1次
+     * @param obj
+     */
+    function startFlashOne(obj: egret.DisplayObject, flashColor: number, flashTime: number): void;
 }
 declare namespace tubao.model {
     /**
@@ -506,57 +469,6 @@ declare namespace tubao.model {
       */
     function xuanZuan(val: number): void;
 }
-declare module tubao {
-    /**
-     * 智能播放音乐
-     * @param {number} musicId 音乐id
-     */
-    function music(musicId: number): void;
-    /**
-     * 智能播放音乐
-     * @param {string} musicId 音乐名字
-     */
-    function musicStr(name: string): void;
-}
-/**
- * 平台数据接口。
- * 由于每款游戏通常需要发布到多个平台上，所以提取出一个统一的接口用于开发者获取平台数据信息
- * 推荐开发者通过这种方式封装平台逻辑，以保证整体结构的稳定
- * 由于不同平台的接口形式各有不同，白鹭推荐开发者将所有接口封装为基于 Promise 的异步形式
- */
-interface Platform {
-    /**设置cookie */
-    setStorage(key: string, value: string): string;
-    /**获得cookie */
-    getStorage(key: string): string;
-    /**加载字体 */
-    lodinFont(): any;
-    /**获得用户信息 */
-    getUserInfo(): Promise<any>;
-    /**登录 */
-    login(): Promise<any>;
-}
-declare class DebugPlatform implements Platform {
-    setStorage(key: any, value: any): string;
-    getStorage(key: any): any;
-    lodinFont(): void;
-    getUserInfo(): Promise<{
-        nickName: string;
-    }>;
-    login(): Promise<void>;
-}
-declare let platform: Platform;
-interface Window {
-    platform: Platform;
-}
-/**头条 */
-declare const tt: any;
-/**微信 */
-declare const wx: any;
-/**QQ */
-declare const qq: any;
-/**快手 */
-declare const ks: any;
 declare module tubao {
     /**
      * 带红点的按钮
@@ -683,41 +595,6 @@ declare namespace tubao {
          * @param {string} key 资源路径也可能是资源名字
          */
         static getFileRealPath(key: string): string;
-    }
-}
-declare module tubao {
-    /**
-     * 人物标签类
-     */
-    class roleLable extends egret.DisplayObjectContainer {
-        /**标签图片 */
-        img: egret.Bitmap;
-        /**标签名字 */
-        labelName: egret.TextField;
-        private _color;
-        private _text;
-        /**
-         * 人物标签类，可以构建一个展示标签出来
-         * @param {string} lable 标签内容
-         * @param {number} color 标签颜色
-         */
-        constructor(lable: string, color: number);
-        /**
-         * 获得颜色
-         */
-        /**
-         * 设置颜色
-         * @param {number} color 颜色值
-         */
-        color: number;
-        /**
-         * 获得颜色
-         */
-        /**
-        * 设置标签文字
-        * @param {number} color 颜色值
-        */
-        text: string;
     }
 }
 /**
@@ -1397,17 +1274,59 @@ declare module tubao.base {
         buttonResult(event: any): void;
     }
 }
-declare namespace tubao.video {
-    /**
-     * 视频事件类
-     */
-    class videoEvent extends egret.Event {
-        /**视频播放开始 */
-        static videoPlay: string;
-        /**视频播放结束 */
-        static videoEnd: string;
-        name: string;
-        constructor(type: string, bubbles?: boolean, cancelable?: boolean);
+/**
+ * 遥感
+ */
+declare namespace tubao.joyStick {
+    class joyStickEvent {
+        /** 摇杆按下开始接受事件时候派发 */
+        static EVENT_JOY_START: string;
+        /** 触摸抬起后出发摇杆本次摇杆事件结束 */
+        static EVENT_JOY_END: string;
+        /** 摇杆角度改变时候派发 */
+        static EVENT_JOY_CHANGE: string;
+        /** 初始化摇杆完成后触发 */
+        static EVENT_INIT_COMPLETE: string;
+    }
+    class joyStickType {
+        /** 四方位 */
+        static TYPE_FOUR: number;
+        /** 八方为 */
+        static TYPE_EIGHT: number;
+    }
+    class JoyStickComponent extends eui.Component {
+        private _joybg;
+        private _joyStick;
+        private _minAlpha;
+        private _maxAlpha;
+        private _angle;
+        private _bgRadius;
+        private _joyRadius;
+        private _mouseX;
+        private _mouseY;
+        private _initJoyPoint;
+        private _type;
+        private _touchID;
+        private _isSkinFlag;
+        /**
+         * 初始化摇杆参数
+         * @param type 方向为定义在 joyStickType类下 目前仅实现八方为
+         * @param joyBg 摇杆背景纹理(可选)
+         * @param joyStick 摇杆纹理(可选)
+         * @param skin //皮肤文件(可选)如果用exml必须满足 有_joybg和_joyStick两个eui.image控件
+         */
+        constructor(type: number, joyBg?: egret.Texture, joyStick?: egret.Texture, skin?: any);
+        childrenCreated(): void;
+        private onTouchBegin(e);
+        private onTouchMove(e);
+        private onTouchEnd(e);
+        showJoy(callBack: () => void): void;
+        endJoy(callBack: () => void): void;
+        /**
+         * 获取当前角度信息
+         */
+        getAngle(): number;
+        destroy(): void;
     }
 }
 declare module tubao.base {
@@ -1498,24 +1417,23 @@ declare module tubao.base {
         close(): void;
     }
 }
-declare namespace tubao {
+declare module tubao {
     /**
-     * 金底棕字标签
+     * 灰度图片类
      */
-    class charTag extends eui.Component {
-        /**文本内容组件 */
-        private wordLabel;
-        /**文字内容 */
-        private _char;
+    class grayImg extends eui.Image {
+        colorMatrix: number[];
+        colorFlilter: egret.ColorMatrixFilter;
+        constructor();
         /**
-         * 金底棕字标签
+         * 灰度
          */
-        constructor(word: string);
-        /**
-         * 文字内容
-         */
-        char: string;
+        gray: boolean;
     }
+    /**
+     * 显示对象灰度工具
+     */
+    function gray(dis: egret.DisplayObject): void;
 }
 declare module tubao.base {
     /**
@@ -1612,55 +1530,25 @@ declare module tubao.base {
         closePage2(): void;
     }
 }
-/**
- * cookie操作类
- */
-declare namespace tubao.cookie {
-    /**游戏的数据库标记 */
-    var label: string;
+declare module tubao {
     /**
-     * 特殊数据值操作存入前端数字数据，如果第二个参数存在就写入，不存在就查询
-     * @param value 查询的数据列表索引
-     * @param Str 写入的数据
-     *
+     * 一个点
      */
-    function LocalStorageNum(Str0: string, Str1?: number): number;
-    /**
-     * 获取localStorage缓存数据
-     * @param {string} key 值对
-     * @return {string} 这个key对应的值
-     */
-    function getLocal(key: string): string;
-    /**
-     * 设置localStorage缓存数据
-     * @param {string} key 值对
-     * @return {string} 这个key对应的值
-     */
-    function setLocal(key: string, value: string): boolean;
-    /**
-     * cookie操作，设置一个cookie
-     * @param cname 设置cookie的id
-     * @param cvalue 设置cookie的值
-     * @param exdays 设置cookie在几分钟后失效
-     */
-    function setCookie(cname: any, cvalue: any, exdays: number): void;
-    /**
-     * cookie操作，删除一个cookie
-     * @param cname 设置cookie的id
-     * @param cvalue 设置cookie的值
-     * @param exdays 设置cookie在几分钟后失效
-     */
-    function delCookie(cname: any): void;
-    /**
-     * 查询一个cookie的值，不存在返回false
-     * @param cname cookie名
-    */
-    function getCookie(cname: any): string | false;
-    /**
-     * 查询一个cookie的值，不存在返回false
-     * @param cname cookie名
-    */
-    function getCookieNum(cname: any): string | 0;
+    class dot extends egret.Shape {
+        size: number;
+        bgColor: number;
+        borderColor: number;
+        borderSize: number;
+        cornerRadius: number;
+        halfSize: number;
+        /**
+         * 一个点
+         * @param {number} x 定位x坐标
+         * @param {number} y 定位y坐标
+         * @param {number} color 颜色
+         */
+        constructor(x: number, y: number, color: number);
+    }
 }
 declare namespace tubao.DB {
     /**
@@ -1680,23 +1568,34 @@ declare namespace tubao.DB {
         AnGroup: {};
         bqStatic: boolean;
         /**
-         * 改变插槽显示对象
-         * @param skeletonName 骨架名字
-         * @param data 包含基础偏移信息，{res,x,y,r}，res:texture资源名字，x：偏移x，y：偏移y，r：偏移旋转
-         * @param time 时间，默认为null，不进行time后变回来，假如传入值则在这个时间后变回来
-         * @param visible 显示隐藏
-         *
+         * 改变插槽显示对象,并且在规定的时间后还原
+         * @param {string} skeletonName 骨架名字
+         * @param {string} Skeleton 插槽名字
+         * @param {number} time 时间，默认为null，不进行time后变回来，假如传入值则在这个时间后变回来
+         * @param {string} imgResName 图片资源名字
+         * @param {number} imgResX 图片资源位置x
+         * @param {number} imgResY 图片资源位置y
+         * @param {number} imgResRotation 图片资源旋转角度
+         * @param {boolean} imgResVisible 图片资源显示隐藏
+         * @param {boolean} lodingType 资源加载类型 true：res管理内置资源，false：外部url方式加载
          */
-        setSlotImgInTime(skeletonName: string, slotName: string, data: any[], time: number, visible: boolean, lodingType?: boolean): void;
+        setSlotImgInTime(skeletonName: string, slotName: string, time: number, imgResName: string, imgResX: number, imgResY: number, imgResRotation: number, imgResVisible: boolean, lodingType?: boolean): void;
         /**
          * 设置插槽图片内容
-         * @param skeletonName 骨架名字
-         * @param Skeleton 插槽名字
-         * @param data 包含基础偏移信息，{res,x,y,r}，res:texture资源名字，x：偏移x，y：偏移y，r：偏移旋转
+         * @param {string} skeletonName 骨架名字
+         * @param {string} Skeleton 插槽名字
+         * @param {string} imgResName 图片资源名字
+         * @param {number} imgResX 图片资源位置x
+         * @param {number} imgResY 图片资源位置y
+         * @param {number} imgResRotation 图片资源旋转角度
+         * @param {boolean} imgResVisible 图片资源显示隐藏
+         * @param {boolean} lodingType 资源加载类型 true：res管理内置资源，false：外部url方式加载
          */
-        setSlotImg(skeletonName: string, slotName: string, data: any[], visible: any, lodingType?: boolean): Promise<void>;
+        setSlotImg(skeletonName: string, slotName: string, imgResName: string | egret.Texture, imgResX: number, imgResY: number, imgResRotation: number, imgResVisible: boolean, lodingType?: boolean): Promise<void>;
         /**
          * 请求数据
+         * @param {string} str 资源名字
+         * @param {boolean} lodingType 资源加载类型 true：res管理内置资源，false：外部url方式加载
          */
         reqData(str: string, lodingType?: boolean): Promise<{}>;
         /**
@@ -1711,7 +1610,7 @@ declare namespace tubao.DB {
          * @param skeletonName 骨架组名字
          * @param fun 回调方法
          */
-        anPlay(skeletonName: string, fun?: Function): void;
+        private anPlay(skeletonName, fun?);
         /**
          * 动画控制
          * @param skeletonName 骨架名字
@@ -1742,14 +1641,6 @@ declare namespace tubao.DB {
          * @return {number} 返回当前索引位置
          */
         setDBSlotIndex(skeletonName: string, slotName: string, index: number): number;
-        /**
-         * 设置插槽当前位置显示对象颜色
-         * @param {string} skeletonName 骨架名字
-         * @param {string} slotName 插槽名字
-         * @param {egret.DisplayObject} color 颜色
-         * @return {egret.DisplayObject} 返回设置颜色的显示对象
-         */
-        setDBSlotColor(skeletonName: string, slotName: string, color: number): egret.DisplayObject;
     }
     /**
      * 混合动画播放
@@ -1795,9 +1686,9 @@ declare namespace tubao.list {
         ClearAll(): void;
         /**
          * 删除一个指定项
-         * @param {string} nur 删除的nur
+         * @param {number} nur 删除的nur
          */
-        delList(nur: string): void;
+        delList(nur: number): void;
         /**
          * 触发开启关闭
          */
@@ -1820,31 +1711,15 @@ declare namespace tubao.list {
         init(): void;
     }
 }
-declare namespace tubao {
+declare namespace tubao.list {
     /**
-     * 文字逐步显示
+     * 下拉列表的单个项
      */
-    class charStep extends eui.Label {
-        private instantly;
-        timer: egret.Timer;
-        private _allWord;
-        constructor();
-        /**
-         * 时间调度
-         */
-        private timerStep();
-        /**
-         * 点击后显示全部
-         */
-        touchTap(): void;
-        /**
-         * 获取说话的全部内容
-         */
-        /**
-         * 设置说话的全部内容
-         * @param {string} word
-         */
-        allWord: string;
+    class downListNape extends eui.Component {
+        lab_nr: eui.Label;
+        nur: any;
+        Name: any;
+        constructor(Nur: any, Name: any);
     }
 }
 declare namespace tubao.editor {
@@ -1888,40 +1763,29 @@ declare namespace tubao.editor {
 }
 declare namespace tubao {
     /**
-     * 时间日期工具
+     * 文字逐步显示
      */
-    class date {
+    class charStep extends eui.Label {
+        private instantly;
+        timer: egret.Timer;
+        private _allWord;
+        constructor();
         /**
-         * 根据秒数格式化字符串
-         * @param second 秒数
-         * @param type 1:00:00:00   2:yyyy-mm-dd h:m:s    3:00:00(分:秒)   4:xx天前，xx小时前，xx分钟前    6:00:00(时:分)
-         * @return
-         *
+         * 时间调度
          */
-        static getFormatBySecond(second: number, type?: number): string;
-        private static getFormatBySecond1(t?);
-        private static getFormatBySecond3(t?);
-        private static getFormatBySecond2(time);
-        private static getFormatBySecond4(time);
-        private static getFormatBySecond5(time);
-        private static getFormatBySecond6(t?);
+        private timerStep();
         /**
-         * 获取当前是周几
-         * ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"]
+         * 点击后显示全部
          */
-        static getDay(timestamp: number): number;
+        touchTap(): void;
         /**
-         * 判定两个时间是否是同一天
+         * 获取说话的全部内容
          */
-        static isSameDate(timestamp1: number, timestamp2: number): boolean;
         /**
-         * 日期格式化
+         * 设置说话的全部内容
+         * @param {string} word
          */
-        static format(d: Date, fmt?: string): string;
-        /**
-         * 计算两个时间相差天数
-         */
-        static dateDifference(timestamp1: number, timestamp2: number): number;
+        allWord: string;
     }
 }
 /**
@@ -2014,25 +1878,44 @@ declare namespace tubao.Effect {
     function controlColorSetColor(disPlay: egret.DisplayObject, color: number, control: number): void;
 }
 /**
- * 闪光效果工具模块
+ * 平台数据接口。
+ * 由于每款游戏通常需要发布到多个平台上，所以提取出一个统一的接口用于开发者获取平台数据信息
+ * 推荐开发者通过这种方式封装平台逻辑，以保证整体结构的稳定
+ * 由于不同平台的接口形式各有不同，白鹭推荐开发者将所有接口封装为基于 Promise 的异步形式
  */
-declare namespace tubao.Effect.flash {
-    /**
-     * 开始发光闪烁
-     * @param obj
-     */
-    function startFlash(obj: egret.DisplayObject, flashColor: number, flashTime: number): void;
-    /**
-     * 停止发光闪烁
-     * @param obj
-     */
-    function stopFlash(obj: egret.DisplayObject): void;
-    /**
-     * 发光闪烁1次
-     * @param obj
-     */
-    function startFlashOne(obj: egret.DisplayObject, flashColor: number, flashTime: number): void;
+interface Platform {
+    /**设置cookie */
+    setStorage(key: string, value: string): string;
+    /**获得cookie */
+    getStorage(key: string): string;
+    /**加载字体 */
+    lodinFont(): any;
+    /**获得用户信息 */
+    getUserInfo(): Promise<any>;
+    /**登录 */
+    login(): Promise<any>;
 }
+declare class DebugPlatform implements Platform {
+    setStorage(key: any, value: any): string;
+    getStorage(key: any): any;
+    lodinFont(): void;
+    getUserInfo(): Promise<{
+        nickName: string;
+    }>;
+    login(): Promise<void>;
+}
+declare let platform: Platform;
+interface Window {
+    platform: Platform;
+}
+/**头条 */
+declare const tt: any;
+/**微信 */
+declare const wx: any;
+/**QQ */
+declare const qq: any;
+/**快手 */
+declare const ks: any;
 /**
  * 兔宝弹窗效果类，用于放置弹窗面板的效果
  */
@@ -2580,22 +2463,100 @@ interface IBaseView {
     loadResource(loadComplete: Function, initComplete: Function): void;
 }
 /**
- * 调试工具类
- * new tubao.deBug.huanDong();
- * new tubao.deBug.secondNewObject()
+ * 设备信息
  */
-declare namespace tubao.deBug {
-    /**
-     * 每秒创建的对象数量
-     */
-    class secondNewObject {
-        objectNum: number[];
-        constructor();
-    }
-    class huanDong {
-        huan: egret.Ease[];
-        huanString: any[];
-        constructor();
+declare namespace tubao {
+    class device {
+        /**
+         * 当前是否Html5版本
+         * @returns {boolean}
+         * @constructor
+         */
+        static readonly isHtml5: boolean;
+        /**
+         * 当前是否是Native版本
+         * @returns {boolean}
+         * @constructor
+         */
+        static readonly isNative: boolean;
+        /**
+         * 当前是否渠道版本,微信，QQ,字节跳动，小米轻游戏
+         * @returns {boolean}
+         * @constructor
+         */
+        static readonly isChannel: boolean;
+        /**
+         * 当前是否是微信小游戏平台
+         */
+        static readonly isWxGame: boolean;
+        /**
+         * 当前是否是qq小游戏平台
+         */
+        static readonly isQQGame: boolean;
+        /**
+         * 当前是否是字节跳动头条小游戏平台
+         */
+        static readonly isTTGame: boolean;
+        /**
+         * 当前是否是快手小游戏平台
+         */
+        static readonly isKSGame: boolean;
+        /**
+         * 当前是否是小米轻游戏平台
+         */
+        static readonly isQGame: boolean;
+        /**
+         * 是否是在手机上
+         * @returns {boolean}
+         * @constructor
+         */
+        static readonly isMobile: boolean;
+        /**
+         * 是否是在PC上
+         * @returns {boolean}
+         * @constructor
+         */
+        static readonly isPC: boolean;
+        /**
+         * 是否是QQ浏览器
+         * @returns {boolean}
+         * @constructor
+         */
+        static readonly isQQBrowser: boolean;
+        /**
+         * 是否是IE浏览器
+         * @returns {boolean}
+         * @constructor
+         */
+        static readonly isIEBrowser: boolean;
+        /**
+         * 是否是Firefox浏览器
+         * @returns {boolean}
+         * @constructor
+         */
+        static readonly isFirefoxBrowser: boolean;
+        /**
+         * 是否是Chrome浏览器
+         * @returns {boolean}
+         * @constructor
+         */
+        static readonly isChromeBrowser: boolean;
+        /**
+         * 是否是Safari浏览器
+         * @returns {boolean}
+         * @constructor
+         */
+        static readonly isSafariBrowser: boolean;
+        /**
+         * 是否是Opera浏览器
+         * @returns {boolean}
+         * @constructor
+         */
+        static readonly isOperaBrowser: boolean;
+        /**
+         * 得到设备系统 如：iOS/Android/WP7
+         */
+        static readonly DeviceOs: string;
     }
 }
 declare namespace tubao.paint {
@@ -2847,100 +2808,22 @@ declare namespace tubao.fields {
     }
 }
 /**
- * 设备信息
+ * 调试工具类
+ * new tubao.deBug.huanDong();
+ * new tubao.deBug.secondNewObject()
  */
-declare namespace tubao {
-    class device {
-        /**
-         * 当前是否Html5版本
-         * @returns {boolean}
-         * @constructor
-         */
-        static readonly isHtml5: boolean;
-        /**
-         * 当前是否是Native版本
-         * @returns {boolean}
-         * @constructor
-         */
-        static readonly isNative: boolean;
-        /**
-         * 当前是否渠道版本,微信，QQ,字节跳动，小米轻游戏
-         * @returns {boolean}
-         * @constructor
-         */
-        static readonly isChannel: boolean;
-        /**
-         * 当前是否是微信小游戏平台
-         */
-        static readonly isWxGame: boolean;
-        /**
-         * 当前是否是qq小游戏平台
-         */
-        static readonly isQQGame: boolean;
-        /**
-         * 当前是否是字节跳动头条小游戏平台
-         */
-        static readonly isTTGame: boolean;
-        /**
-         * 当前是否是快手小游戏平台
-         */
-        static readonly isKSGame: boolean;
-        /**
-         * 当前是否是小米轻游戏平台
-         */
-        static readonly isQGame: boolean;
-        /**
-         * 是否是在手机上
-         * @returns {boolean}
-         * @constructor
-         */
-        static readonly isMobile: boolean;
-        /**
-         * 是否是在PC上
-         * @returns {boolean}
-         * @constructor
-         */
-        static readonly isPC: boolean;
-        /**
-         * 是否是QQ浏览器
-         * @returns {boolean}
-         * @constructor
-         */
-        static readonly isQQBrowser: boolean;
-        /**
-         * 是否是IE浏览器
-         * @returns {boolean}
-         * @constructor
-         */
-        static readonly isIEBrowser: boolean;
-        /**
-         * 是否是Firefox浏览器
-         * @returns {boolean}
-         * @constructor
-         */
-        static readonly isFirefoxBrowser: boolean;
-        /**
-         * 是否是Chrome浏览器
-         * @returns {boolean}
-         * @constructor
-         */
-        static readonly isChromeBrowser: boolean;
-        /**
-         * 是否是Safari浏览器
-         * @returns {boolean}
-         * @constructor
-         */
-        static readonly isSafariBrowser: boolean;
-        /**
-         * 是否是Opera浏览器
-         * @returns {boolean}
-         * @constructor
-         */
-        static readonly isOperaBrowser: boolean;
-        /**
-         * 得到设备系统 如：iOS/Android/WP7
-         */
-        static readonly DeviceOs: string;
+declare namespace tubao.deBug {
+    /**
+     * 每秒创建的对象数量
+     */
+    class secondNewObject {
+        objectNum: number[];
+        constructor();
+    }
+    class huanDong {
+        huan: egret.Ease[];
+        huanString: any[];
+        constructor();
     }
 }
 /**
@@ -2968,24 +2851,42 @@ declare namespace tubao.fields {
         private updateEmojis();
     }
 }
-declare module tubao {
+declare namespace tubao {
     /**
-     * 一个点
+     * 时间日期工具
      */
-    class dot extends egret.Shape {
-        size: number;
-        bgColor: number;
-        borderColor: number;
-        borderSize: number;
-        cornerRadius: number;
-        halfSize: number;
+    class date {
         /**
-         * 一个点
-         * @param {number} x 定位x坐标
-         * @param {number} y 定位y坐标
-         * @param {number} color 颜色
+         * 根据秒数格式化字符串
+         * @param second 秒数
+         * @param type 1:00:00:00   2:yyyy-mm-dd h:m:s    3:00:00(分:秒)   4:xx天前，xx小时前，xx分钟前    6:00:00(时:分)
+         * @return
+         *
          */
-        constructor(x: number, y: number, color: number);
+        static getFormatBySecond(second: number, type?: number): string;
+        private static getFormatBySecond1(t?);
+        private static getFormatBySecond3(t?);
+        private static getFormatBySecond2(time);
+        private static getFormatBySecond4(time);
+        private static getFormatBySecond5(time);
+        private static getFormatBySecond6(t?);
+        /**
+         * 获取当前是周几
+         * ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"]
+         */
+        static getDay(timestamp: number): number;
+        /**
+         * 判定两个时间是否是同一天
+         */
+        static isSameDate(timestamp1: number, timestamp2: number): boolean;
+        /**
+         * 日期格式化
+         */
+        static format(d: Date, fmt?: string): string;
+        /**
+         * 计算两个时间相差天数
+         */
+        static dateDifference(timestamp1: number, timestamp2: number): number;
     }
 }
 declare namespace tubao.layer {
@@ -3126,23 +3027,55 @@ declare namespace tubao.layer {
         static getCurrScene(): number;
     }
 }
-declare module tubao {
+/**
+ * cookie操作类
+ */
+declare namespace tubao.cookie {
+    /**游戏的数据库标记 */
+    var label: string;
     /**
-     * 灰度图片类
+     * 特殊数据值操作存入前端数字数据，如果第二个参数存在就写入，不存在就查询
+     * @param value 查询的数据列表索引
+     * @param Str 写入的数据
+     *
      */
-    class grayImg extends eui.Image {
-        colorMatrix: number[];
-        colorFlilter: egret.ColorMatrixFilter;
-        constructor();
-        /**
-         * 灰度
-         */
-        gray: boolean;
-    }
+    function LocalStorageNum(Str0: string, Str1?: number): number;
     /**
-     * 显示对象灰度工具
+     * 获取localStorage缓存数据
+     * @param {string} key 值对
+     * @return {string} 这个key对应的值
      */
-    function gray(dis: egret.DisplayObject): void;
+    function getLocal(key: string): string;
+    /**
+     * 设置localStorage缓存数据
+     * @param {string} key 值对
+     * @return {string} 这个key对应的值
+     */
+    function setLocal(key: string, value: string): boolean;
+    /**
+     * cookie操作，设置一个cookie
+     * @param cname 设置cookie的id
+     * @param cvalue 设置cookie的值
+     * @param exdays 设置cookie在几分钟后失效
+     */
+    function setCookie(cname: any, cvalue: any, exdays: number): void;
+    /**
+     * cookie操作，删除一个cookie
+     * @param cname 设置cookie的id
+     * @param cvalue 设置cookie的值
+     * @param exdays 设置cookie在几分钟后失效
+     */
+    function delCookie(cname: any): void;
+    /**
+     * 查询一个cookie的值，不存在返回false
+     * @param {string} cname cookie名
+    */
+    function getCookie(cname: string): string | false;
+    /**
+     * 查询一个cookie的值，不存在返回false
+     * @param {string} cname cookie名
+    */
+    function getCookieNum(cname: string): string | number;
 }
 declare namespace tubao.sound {
     /**
@@ -3170,10 +3103,12 @@ declare namespace tubao.sound {
         play(effectName: string): void;
         /**
          * 暂停
+         * 请尽量避免使用，不可和其他api能力混用，且在运行时仅可运行一次
          */
         pause(): void;
         /**
          * 恢复
+         * 请尽量避免使用，不可和其他api能力混用，且在运行时仅可运行一次
          */
         resume(): void;
         /**
@@ -3517,14 +3452,16 @@ declare namespace tubao.video {
         bofangWanCheng(): void;
     }
 }
-declare namespace tubao.list {
+declare namespace tubao.video {
     /**
-     * 下拉列表的单个项
+     * 视频事件类
      */
-    class downListNape extends eui.Component {
-        lab_nr: eui.Label;
-        nur: any;
-        Name: any;
-        constructor(Nur: any, Name: any);
+    class videoEvent extends egret.Event {
+        /**视频播放开始 */
+        static videoPlay: string;
+        /**视频播放结束 */
+        static videoEnd: string;
+        name: string;
+        constructor(type: string, bubbles?: boolean, cancelable?: boolean);
     }
 }

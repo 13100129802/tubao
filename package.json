@@ -1,4 +1,4 @@
-{
+﻿{
   "name": "tubao",
   "compilerVersion": "5.3.10",
   "typings": "bin/tubao.d.ts",
@@ -6,5 +6,14 @@
     "gulp-typedoc": "^3.0.2",
     "typedoc": "^0.22.10",
     "typedoc-plugin-markdown": "^3.16.0"
-  }
+  },
+  "files": ["bin","docs","package.json","tsconfig.json","README.md"],
+  "description": "Tubao建立在Egret白鹭引擎上并且提供了众多API工具箱可以直接使用，让游戏研发过程变的轻松简单。",
+  "version": "1.1.0",
+  "directories": {
+    "doc": "docs"
+  },
+  "keywords": ["tubao","egret","白鹭引擎","游戏开发","兔宝世界","兔宝核芯"],
+  "author": "千里马",
+  "license": "BSD-2-Clause"
 }

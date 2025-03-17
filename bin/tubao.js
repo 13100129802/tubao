@@ -1,9 +1,3 @@
-//Copyright <2023> <李向鹏>
-//Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
-//1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
-//2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-//THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS “AS IS” AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 var __reflect = (this && this.__reflect) || function (p, c, t) {
     p.__class__ = c, t ? t.push(c) : t = [c], p.__types__ = p.__types__ ? t.concat(p.__types__) : t;
 };
@@ -131,453 +125,6 @@ var tubao;
         base.panel = panel;
         __reflect(panel.prototype, "tubao.base.panel");
     })(base = tubao.base || (tubao.base = {}));
-})(tubao || (tubao = {}));
-var tubao;
-(function (tubao) {
-    var Appli;
-    (function (Appli) {
-    })(Appli = tubao.Appli || (tubao.Appli = {}));
-})(tubao || (tubao = {}));
-var tubao;
-(function (tubao) {
-    var utils;
-    (function (utils) {
-        /**
-         * 让显示对象可以拖动
-         * @param {egret.DisplayObject} display 显示对象
-         * @param {egret.DisplayObject} arr 显示对象连带扩展
-         */
-        function dragDisplauy(display) {
-            var arr = [];
-            for (var _i = 1; _i < arguments.length; _i++) {
-                arr[_i - 1] = arguments[_i];
-            }
-            var _touchStatus = false;
-            //当前触摸状态，按下时，值为true
-            var _distance = new egret.Point();
-            //鼠标点击时，鼠标全局坐标与_bird的位置差
-            var disArr = [];
-            var disArrX = []; //相对距离x
-            var disArrY = []; //相对距离y
-            //显示对象连带扩展
-            disArr = arr;
-            for (var a in arr) {
-                disArr[a] = arr[a];
-                //相对对象
-                disArrX[a] = arr[a].x - display.x;
-                //相对对象x,两个对象做差
-                disArrY[a] = arr[a].y - display.y;
-                //相对对象y,两个对象做差
-            }
-            display.addEventListener(egret.TouchEvent.TOUCH_BEGIN, mouseDown, this);
-            //按下手指
-            display.addEventListener(egret.TouchEvent.TOUCH_END, mouseUp, this);
-            //抬起手指
-            display.addEventListener(egret.Event.REMOVED, removed, this);
-            //卸载在显示列表
-            /**
-             * 卸载时清除
-             */
-            function removed() {
-                display.removeEventListener(egret.TouchEvent.TOUCH_BEGIN, mouseDown, this);
-                //按下手指
-                display.removeEventListener(egret.TouchEvent.TOUCH_END, mouseUp, this);
-                //抬起手指
-                display.removeEventListener(egret.Event.REMOVED, removed, this);
-                //卸载在显示列表
-            }
-            /**
-             * 按下手指
-             */
-            function mouseDown(evt) {
-                _touchStatus = true;
-                _distance.x = evt.stageX - display.x;
-                _distance.y = evt.stageY - display.y;
-                display.stage.addEventListener(egret.TouchEvent.TOUCH_MOVE, mouseMove, this);
-            }
-            /**
-             * 滑动屏幕
-             */
-            function mouseMove(evt) {
-                if (_touchStatus) {
-                    display.x = evt.stageX - _distance.x;
-                    display.y = evt.stageY - _distance.y;
-                    for (var a in disArr) {
-                        disArr[a].x = evt.stageX - _distance.x + disArrX[a];
-                        disArr[a].y = evt.stageY - _distance.y + disArrY[a];
-                    }
-                }
-            }
-            /**
-             * 抬起手指
-             */
-            function mouseUp(evt) {
-                _touchStatus = false;
-                display.stage.removeEventListener(egret.TouchEvent.TOUCH_MOVE, mouseMove, this);
-            }
-        }
-        utils.dragDisplauy = dragDisplauy;
-        /**
-         * 继承后显示对象可拖动
-         */
-        var drag = (function (_super) {
-            __extends(drag, _super);
-            //鼠标点击时，鼠标全局坐标与_bird的位置差
-            function drag() {
-                var _this = _super.call(this) || this;
-                _this._touchStatus = false;
-                //当前触摸状态，按下时，值为true
-                _this._distance = new egret.Point();
-                _this.addEventListener(egret.TouchEvent.TOUCH_BEGIN, _this.mouseDown, _this);
-                //按下手指
-                _this.addEventListener(egret.TouchEvent.TOUCH_END, _this.mouseUp, _this);
-                //抬起手指
-                _this.addEventListener(egret.Event.REMOVED, _this.removed, _this);
-                return _this;
-                //卸载在显示列表
-            }
-            /**
-             * 卸载时清除
-             */
-            drag.prototype.removed = function () {
-                this.removeEventListener(egret.TouchEvent.TOUCH_BEGIN, this.mouseDown, this);
-                //按下手指
-                this.removeEventListener(egret.TouchEvent.TOUCH_END, this.mouseUp, this);
-                //抬起手指
-                this.removeEventListener(egret.Event.REMOVED, this.removed, this);
-                //卸载在显示列表
-            };
-            /**
-             * 按下手指
-             */
-            drag.prototype.mouseDown = function (evt) {
-                this._touchStatus = true;
-                this._distance.x = evt.stageX - this.x;
-                this._distance.y = evt.stageY - this.y;
-                this.stage.addEventListener(egret.TouchEvent.TOUCH_MOVE, this.mouseMove, this);
-            };
-            /**
-             * 滑动屏幕
-             */
-            drag.prototype.mouseMove = function (evt) {
-                if (this._touchStatus) {
-                    this.x = evt.stageX - this._distance.x;
-                    this.y = evt.stageY - this._distance.y;
-                }
-            };
-            /**
-             * 抬起手指
-             */
-            drag.prototype.mouseUp = function (evt) {
-                this._touchStatus = false;
-                this.stage.removeEventListener(egret.TouchEvent.TOUCH_MOVE, this.mouseMove, this);
-            };
-            return drag;
-        }(eui.Component));
-        utils.drag = drag;
-        __reflect(drag.prototype, "tubao.utils.drag");
-    })(utils = tubao.utils || (tubao.utils = {}));
-})(tubao || (tubao = {}));
-var tubao;
-(function (tubao) {
-    var DB;
-    (function (DB) {
-        /**
-         * 龙骨功能基类-提供底层支持功能
-         * 提供骨架，骨节，插槽的显示对象获取，活动状态的设置，操作对象的获取
-         */
-        var DBbasice = (function (_super) {
-            __extends(DBbasice, _super);
-            /**
-             * 初始化龙骨工厂
-             * @param {string} name 龙骨项目名字
-             * @param {boolean} lodinYes 是否加载
-             */
-            function DBbasice(name, lodinYes) {
-                if (lodinYes === void 0) { lodinYes = true; }
-                var _this = _super.call(this) || this;
-                /**龙骨项目所有骨架 */
-                _this.skeleton = {};
-                /**初始化完成 */
-                _this.initYes = false;
-                /**龙骨数据列表 */
-                _this.dbDataList = {};
-                //——————————————————————————————————————————————————————————缩放和隐藏操作————————————————————————————————————————————————————————————————————————————
-                _this._scale = undefined;
-                _this.dbFactory = new dragonBones.EgretFactory();
-                _this.dbFactory.clock.timeScale = 0.7;
-                if (name && lodinYes)
-                    _this.lodin(name);
-                return _this;
-            }
-            /**
-             * 替换当前项目插槽内容用外部项目的指定插槽
-             * @param {string} dragonBonesName 外部项目名字，DragonBonesData 实例的缓存名称
-             * @param {string} armatureName 骨架数据名称。
-             * @param {string} slotName 插槽数据名称。
-             * @param {string} displayName 显示对象数据名称。
-             * @param {dragonBones.Slot} slot 指定的插槽
-             * @param {number} displayIndex 被替换的显示对象数据的索引。 （如果未设置，则替换当前的显示对象数据）
-             */
-            DBbasice.prototype.thisDBSlotReplaceOutsideDBSlot = function (dragonBonesName, armatureName, slotName, displayName, slot, displayIndex) {
-                var _this = this;
-                if (slot) {
-                    //插槽存在
-                    if (slot.display) {
-                        //显示对象存在
-                        if (slot.display.texture) {
-                            //纹理存在
-                            slot.display.visible = false;
-                            //隐藏图片，防止闪出几秒之前纹理
-                        }
-                    }
-                }
-                RES.getResAsync(dragonBonesName + "_ske_json", function (skeJson) {
-                    //龙骨原始数据
-                    RES.getResAsync(dragonBonesName + "_tex_json", function (texJson) {
-                        //贴图数据
-                        RES.getResAsync(dragonBonesName + "_tex_png", function (texPng) {
-                            //贴图纹理
-                            if (!_this.dbDataList[skeJson.name]) {
-                                //没有加载完成的时候才需要写入缓存工厂中。
-                                _this.dbDataList[skeJson.name] = true;
-                                //记录为加载完成写入记录
-                                _this.dbFactory.parseDragonBonesData(skeJson);
-                                //将原始数据解析为 DragonBonesData 实例，并缓存到工厂中。
-                                _this.dbFactory.parseTextureAtlasData(texJson, texPng);
-                                //将原始贴图集数据和贴图集对象解析为 TextureAtlasData 实例，并缓存到工厂中。
-                            }
-                            _this.dbFactory.replaceSlotDisplay(dragonBonesName, armatureName, slotName, displayName, slot, displayIndex);
-                            //用特定的显示对象数据替换特定插槽当前的显示对象数据。
-                            slot['clothId'] = displayName;
-                            //写入替换id
-                            slot.display.name = slotName;
-                            //设置显示对象名字，用于未来标记
-                            _this.initYes = true;
-                            //记录初始化完成
-                            slot.display.visible = true;
-                            //显示图片
-                        }, _this);
-                    }, _this);
-                }, this);
-            };
-            /**
-             * 资源加载
-             * @param {string} name 龙骨项目名字
-             */
-            DBbasice.prototype.lodin = function (name) {
-                var _this = this;
-                RES.getResAsync(name + "_ske_json", function (skeJson) {
-                    //龙骨原始数据
-                    RES.getResAsync(name + "_tex_json", function (texJson) {
-                        //贴图数据
-                        RES.getResAsync(name + "_tex_png", function (texPng) {
-                            //贴图纹理
-                            _this.dbBonesData = _this.dbFactory.parseDragonBonesData(skeJson);
-                            //龙骨数据解析，骨架数据
-                            _this.dbtexureData = _this.dbFactory.parseTextureAtlasData(texJson, texPng);
-                            //解析图集数据，图片纹理切图数据，图片纹理像素数据
-                            _this.dbFactory.addDragonBonesData(_this.dbBonesData);
-                            //添加龙骨数据到工厂
-                            _this.dbFactory.addTextureAtlasData(_this.dbtexureData);
-                            //解析的图集数据添加到工厂
-                            //循环遍历全部骨骼
-                            for (var a in _this.dbBonesData.armatureNames) {
-                                var skeletonName = _this.dbBonesData.armatureNames[a];
-                                //骨骼名字
-                                _this.skeleton[skeletonName] = _this.dbFactory.buildArmature(skeletonName);
-                                //创建骨架
-                                _this.dbFactory.clock.add(_this.skeleton[skeletonName]);
-                                //龙骨时间控制
-                            }
-                            _this.initYes = true;
-                            //记录初始化完成
-                            var daterEvent = new DB.dbEvent(DB.dbEvent.lodingOver);
-                            _this.dispatchEvent(daterEvent);
-                            //发送完成事件
-                        }, _this);
-                    }, _this);
-                }, this);
-            };
-            //——————————————————————————————————————————————————————————翻转和播放速度操作————————————————————————————————————————————————————————————————————————————
-            /**
-             * 设置当前骨架是否翻转
-             */
-            DBbasice.prototype.flipSkeleton = function (skeletonName, type) {
-                var skeleton = this.nameGetSkeleton(skeletonName).display;
-                if (type) {
-                    skeleton.scaleX = -Math.abs(skeleton.scaleX);
-                }
-                else {
-                    skeleton.scaleX = Math.abs(skeleton.scaleX);
-                }
-            };
-            /**
-             * 全部骨架翻转设置
-             * @param flip 翻转正反向
-             * @param type 是否理顺
-             */
-            DBbasice.prototype.flip = function (flip, type) {
-                if (type === void 0) { type = false; }
-                if (type) {
-                    for (var a in this.skeleton) {
-                        this.skeleton[a].display.scaleX = -this.skeleton[a].display.scaleX;
-                    }
-                }
-                else {
-                    for (var a in this.skeleton) {
-                        this.skeleton[a].display.scaleX = Math.abs(this.skeleton[a].display.scaleX);
-                    }
-                }
-            };
-            /**
-             * 设置当前骨骼的动画播放速度
-             * @param skeletonName 骨架名字
-             * @param speed 速度
-             */
-            DBbasice.prototype.speedSkeleton = function (skeletonName, speed) {
-                var skeleton = this.nameGetSkeleton(skeletonName).animation;
-                skeleton.timeScale = speed;
-            };
-            Object.defineProperty(DBbasice.prototype, "speed", {
-                /**
-                 * 设置全部骨骼播放速度
-                 * @param speed 速度
-                 */
-                set: function (speed) {
-                    for (var a in this.skeleton) {
-                        this.skeleton[a].animation.timeScale = speed;
-                    }
-                },
-                enumerable: true,
-                configurable: true
-            });
-            Object.defineProperty(DBbasice.prototype, "scale", {
-                //骨架缩放状态
-                /**
-                 * 全体骨架缩放
-                 * @param num 缩放倍数
-                 */
-                get: function () {
-                    return this._scale;
-                },
-                /**
-                 * 全体骨架缩放
-                 * @param num 缩放倍数
-                 */
-                set: function (num) {
-                    for (var a in this.skeleton) {
-                        this._scale = num;
-                        this.scaleSetSkeletonName(a, num);
-                    }
-                },
-                enumerable: true,
-                configurable: true
-            });
-            /**
-             * 根据名字进行骨架缩放
-             * @param skeletonName 骨架名字
-             */
-            DBbasice.prototype.scaleSetSkeletonName = function (skeletonName, num) {
-                var skeleton = this.nameGetSkeleton(skeletonName).display;
-                if (skeleton.scaleX) {
-                    skeleton.scaleX = num;
-                }
-                else {
-                    skeleton.scaleX = -num;
-                }
-                if (skeleton.scaleY) {
-                    skeleton.scaleY = num;
-                }
-                else {
-                    skeleton.scaleY = -num;
-                }
-            };
-            /**
-             * 骨架显示隐藏
-             * @param skeletonName 骨架名字
-             * @param type 显示隐藏
-             */
-            DBbasice.prototype.skeletonVisible = function (skeletonName, type) {
-                this.nameGetSkeleton(skeletonName).display.visible = type;
-            };
-            //——————————————————————————————————————————————————————————底层操作显示对象获取————————————————————————————————————————————————————————————————————————————
-            /**
-             * 根据名字获取到骨架显示对象
-             * @param skeletonName 骨架名字
-             */
-            DBbasice.prototype.displaySkeleton = function (skeletonName) {
-                var skeleton = this.nameGetSkeleton(skeletonName).display;
-                //骨架显示对象
-                return skeleton;
-            };
-            /**
-             * 根据名字获取到插槽显示对象
-             * @param skeletonName 骨架名字
-             * @param slotName 插槽名字
-             */
-            DBbasice.prototype.displaySlot = function (skeletonName, slotName) {
-                return this.nameGetSlot(skeletonName, slotName).display;
-            };
-            /**
-             * 根据名字获取到骨节坐标系偏移变换
-             * @param skeletonName 骨架名字
-             * @param slotName 骨节名字
-             */
-            DBbasice.prototype.displayBone = function (skeletonName, boneName) {
-                return this.nameGetBone(skeletonName, boneName).offset;
-            };
-            //——————————————————————————————————————————————————————————底层操作对象获取————————————————————————————————————————————————————————————————————————————
-            /**
-             * 根据名字获取插槽对象
-             * @param skeletonName 骨架名字
-             * @param slotName 插槽名字
-             */
-            DBbasice.prototype.nameGetSlot = function (skeletonName, slotName) {
-                var skeleton = this.nameGetSkeleton(skeletonName);
-                //获取到骨骼
-                var slot = skeleton.getSlot(slotName);
-                //获取到骨节
-                if (!slot) {
-                    //console.error(`${slotName}-插槽不存在于-${skeleton.name}-骨架上`);
-                }
-                return slot;
-            };
-            /**
-             * 根据名字获取骨节对象
-             * @param skeletonName 骨架名字
-             * @param boneName 骨骼节点名字
-             */
-            DBbasice.prototype.nameGetBone = function (skeletonName, boneName) {
-                var skeleton = this.nameGetSkeleton(skeletonName);
-                //获取到骨骼
-                var bone = skeleton.getBone(boneName);
-                //获取到骨节
-                if (!bone) {
-                    console.log(boneName + "-\u9AA8\u8282\u4E0D\u5B58\u5728\u4E8E-" + skeleton.name + "-\u9AA8\u67B6\u4E0A");
-                }
-                return bone;
-            };
-            /**
-             * 根据名字获取骨架对象
-             * @param skeletonName 骨架名字
-             */
-            DBbasice.prototype.nameGetSkeleton = function (skeletonName) {
-                if (this.skeleton[skeletonName] == undefined) {
-                    if (this.dbBonesData) {
-                        console.error(skeletonName + "-\u9AA8\u67B6\u4E0D\u5B58\u5728\u4E8E-" + this.dbBonesData.name + "-\u6570\u636E\u8282\u70B9\u4E0A");
-                    }
-                    else {
-                        console.error(skeletonName + "-\u9AA8\u67B6\u4E0D\u5B58\u5728\u4E8E\u6570\u636E\u8282\u70B9\u4E0A");
-                    }
-                }
-                return this.skeleton[skeletonName];
-            };
-            return DBbasice;
-        }(eui.Component));
-        DB.DBbasice = DBbasice;
-        __reflect(DBbasice.prototype, "tubao.DB.DBbasice");
-    })(DB = tubao.DB || (tubao.DB = {}));
 })(tubao || (tubao = {}));
 /**
  * 兔宝玩家编辑器
@@ -767,6 +314,287 @@ var tubao;
         editor.tubaoDisplayObjectEditorBase = tubaoDisplayObjectEditorBase;
         __reflect(tubaoDisplayObjectEditorBase.prototype, "tubao.editor.tubaoDisplayObjectEditorBase");
     })(editor = tubao.editor || (tubao.editor = {}));
+})(tubao || (tubao = {}));
+var tubao;
+(function (tubao) {
+    var sound;
+    (function (sound_1) {
+        /**
+         * Created by yangsong on 15-1-14.
+         * Sound基类
+         */
+        var BaseSound = (function () {
+            /**
+             * 构造函数
+             */
+            function BaseSound() {
+                var _this = this;
+                this._cache = {};
+                this._loadingCache = new Array();
+                setInterval(function () { _this.dealSoundTimer(); }, 1 * 60 * 1000);
+            }
+            /**
+             * 处理音乐文件的清理
+             */
+            BaseSound.prototype.dealSoundTimer = function () {
+                var currTime = egret.getTimer();
+                var keys = Object.keys(this._cache);
+                for (var i = 0, len = keys.length; i < len; i++) {
+                    var key = keys[i];
+                    if (!this.checkCanClear(key))
+                        continue;
+                    if (currTime - this._cache[key] >= sound_1.manager.CLEAR_TIME) {
+                        //console.log(key + "已clear")
+                        delete this._cache[key];
+                        RES.destroyRes(key);
+                    }
+                }
+            };
+            /**
+             * 获取Sound
+             * @param key
+             * @returns {egret.Sound}
+             */
+            BaseSound.prototype.getSound = function (key) {
+                var sound = RES.getRes(key);
+                if (sound) {
+                    if (this._cache[key]) {
+                        this._cache[key] = egret.getTimer();
+                    }
+                }
+                else {
+                    if (this._loadingCache.indexOf(key) != -1) {
+                        return null;
+                    }
+                    this._loadingCache.push(key);
+                    RES.getResAsync(key, this.onResourceLoadComplete, this);
+                }
+                return sound;
+            };
+            /**
+             * 资源加载完成
+             * @param event
+             */
+            BaseSound.prototype.onResourceLoadComplete = function (data, key) {
+                var index = this._loadingCache.indexOf(key);
+                if (index != -1) {
+                    this._loadingCache.splice(index, 1);
+                    this._cache[key] = egret.getTimer();
+                    this.loadedPlay(key);
+                }
+            };
+            /**
+             * 资源加载完成后处理播放，子类重写
+             * @param key
+             */
+            BaseSound.prototype.loadedPlay = function (key) {
+            };
+            /**
+             * 检测一个文件是否要清除，子类重写
+             * @param key
+             * @returns {boolean}
+             */
+            BaseSound.prototype.checkCanClear = function (key) {
+                return true;
+            };
+            return BaseSound;
+        }());
+        sound_1.BaseSound = BaseSound;
+        __reflect(BaseSound.prototype, "tubao.sound.BaseSound");
+    })(sound = tubao.sound || (tubao.sound = {}));
+})(tubao || (tubao = {}));
+var tubao;
+(function (tubao) {
+    var layer;
+    (function (layer_1) {
+        /**
+         * EUI层
+         */
+        var layer = (function (_super) {
+            __extends(layer, _super);
+            //UILayer 是 Group 的子类，它除了具有容器的所有标准功能，还能够自动保持自身尺寸始终与舞台尺寸相同
+            function layer() {
+                var _this = _super.call(this) || this;
+                _this.percentWidth = 100;
+                //相对父级容器宽度的百分比
+                _this.percentHeight = 100;
+                //相对父级容器高度的百分比
+                _this.touchEnabled = true;
+                //接收用户操作，比如触屏点击等等
+                _this.touchThrough = true;
+                return _this;
+                //允许点击穿透
+            }
+            return layer;
+        }(eui.UILayer));
+        layer_1.layer = layer;
+        __reflect(layer.prototype, "tubao.layer.layer");
+    })(layer = tubao.layer || (tubao.layer = {}));
+})(tubao || (tubao = {}));
+var tubao;
+(function (tubao) {
+    var fields;
+    (function (fields) {
+        /**
+         * 兔宝富文本包装器
+         */
+        var richTextFiledBase = (function (_super) {
+            __extends(richTextFiledBase, _super);
+            /**
+             * 兔宝富文本基础
+             * @param {EmojiPlugin} emogi 文本管理插件
+             */
+            function richTextFiledBase() {
+                var _this = _super.call(this) || this;
+                /**文本 */
+                _this._textfiled = new egret.TextField();
+                _this.addChild(_this._textfiled);
+                return _this;
+                //添加文本到显示列表
+            }
+            Object.defineProperty(richTextFiledBase.prototype, "text", {
+                get: function () {
+                    return this._textfiled.text;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(richTextFiledBase.prototype, "twidth", {
+                get: function () {
+                    return this._textfiled.width;
+                },
+                set: function (value) {
+                    this._textfiled.width = value;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(richTextFiledBase.prototype, "theight", {
+                get: function () {
+                    return this._textfiled.height;
+                },
+                set: function (value) {
+                    this._textfiled.height = value;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(richTextFiledBase.prototype, "textWidth", {
+                get: function () {
+                    return this._textfiled.textWidth;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(richTextFiledBase.prototype, "textHeight", {
+                get: function () {
+                    return this._textfiled.textHeight;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(richTextFiledBase.prototype, "textFlow", {
+                get: function () {
+                    return this._textfiled.textFlow;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(richTextFiledBase.prototype, "textAlign", {
+                get: function () {
+                    return this._textfiled.textAlign;
+                },
+                set: function (value) {
+                    this._textfiled.textAlign = value;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(richTextFiledBase.prototype, "size", {
+                get: function () {
+                    return this._textfiled.size;
+                },
+                set: function (value) {
+                    this._textfiled.size = value;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(richTextFiledBase.prototype, "textColor", {
+                get: function () {
+                    return this._textfiled.textColor;
+                },
+                set: function (value) {
+                    this._textfiled.textColor = value;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(richTextFiledBase.prototype, "stroke", {
+                get: function () {
+                    return this._textfiled.stroke;
+                },
+                set: function (value) {
+                    this._textfiled.stroke = value;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(richTextFiledBase.prototype, "strokeColor", {
+                get: function () {
+                    return this._textfiled.strokeColor;
+                },
+                set: function (value) {
+                    this._textfiled.strokeColor = value;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(richTextFiledBase.prototype, "lineSpacing", {
+                get: function () {
+                    return this._textfiled.lineSpacing;
+                },
+                set: function (value) {
+                    this._textfiled.lineSpacing = value;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(richTextFiledBase.prototype, "bold", {
+                get: function () {
+                    return this._textfiled.bold;
+                },
+                set: function (value) {
+                    this._textfiled.bold = value;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(richTextFiledBase.prototype, "italic", {
+                get: function () {
+                    return this._textfiled.italic;
+                },
+                set: function (value) {
+                    this._textfiled.italic = value;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(richTextFiledBase.prototype, "fontFamily", {
+                get: function () {
+                    return this._textfiled.fontFamily;
+                },
+                set: function (value) {
+                    this._textfiled.fontFamily = value;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            return richTextFiledBase;
+        }(egret.DisplayObjectContainer));
+        fields.richTextFiledBase = richTextFiledBase;
+        __reflect(richTextFiledBase.prototype, "tubao.fields.richTextFiledBase");
+    })(fields = tubao.fields || (tubao.fields = {}));
 })(tubao || (tubao = {}));
 var tubao;
 (function (tubao) {
@@ -962,525 +790,532 @@ var tubao;
 })(tubao || (tubao = {}));
 var tubao;
 (function (tubao) {
-    var fields;
-    (function (fields) {
+    var DB;
+    (function (DB) {
         /**
-         * 兔宝富文本包装器
+         * 龙骨功能基类-提供底层支持功能
+         * 提供骨架，骨节，插槽的显示对象获取，活动状态的设置，操作对象的获取
          */
-        var richTextFiledBase = (function (_super) {
-            __extends(richTextFiledBase, _super);
+        var DBbasice = (function (_super) {
+            __extends(DBbasice, _super);
             /**
-             * 兔宝富文本基础
-             * @param {EmojiPlugin} emogi 文本管理插件
+             * 初始化龙骨工厂
+             * @param {string} name 龙骨项目名字
+             * @param {boolean} lodinYes 是否加载
              */
-            function richTextFiledBase() {
+            function DBbasice(name, lodinYes) {
+                if (lodinYes === void 0) { lodinYes = true; }
                 var _this = _super.call(this) || this;
-                /**文本 */
-                _this._textfiled = new egret.TextField();
-                _this.addChild(_this._textfiled);
+                /**龙骨项目所有骨架 */
+                _this.skeleton = {};
+                /**初始化完成 */
+                _this.initYes = false;
+                /**龙骨数据列表 */
+                _this.dbDataList = {};
+                //——————————————————————————————————————————————————————————翻转和播放速度操作————————————————————————————————————————————————————————————————————————————
+                _this._flip = false;
+                //——————————————————————————————————————————————————————————缩放和隐藏操作————————————————————————————————————————————————————————————————————————————
+                _this._scale = undefined;
+                _this.dbFactory = new dragonBones.EgretFactory();
+                _this.dbFactory.clock.timeScale = 0.7;
+                if (name && lodinYes)
+                    _this.lodin(name);
                 return _this;
-                //添加文本到显示列表
             }
-            Object.defineProperty(richTextFiledBase.prototype, "text", {
-                get: function () {
-                    return this._textfiled.text;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            Object.defineProperty(richTextFiledBase.prototype, "twidth", {
-                get: function () {
-                    return this._textfiled.width;
-                },
-                set: function (value) {
-                    this._textfiled.width = value;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            Object.defineProperty(richTextFiledBase.prototype, "theight", {
-                get: function () {
-                    return this._textfiled.height;
-                },
-                set: function (value) {
-                    this._textfiled.height = value;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            Object.defineProperty(richTextFiledBase.prototype, "textWidth", {
-                get: function () {
-                    return this._textfiled.textWidth;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            Object.defineProperty(richTextFiledBase.prototype, "textHeight", {
-                get: function () {
-                    return this._textfiled.textHeight;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            Object.defineProperty(richTextFiledBase.prototype, "textFlow", {
-                get: function () {
-                    return this._textfiled.textFlow;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            Object.defineProperty(richTextFiledBase.prototype, "textAlign", {
-                get: function () {
-                    return this._textfiled.textAlign;
-                },
-                set: function (value) {
-                    this._textfiled.textAlign = value;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            Object.defineProperty(richTextFiledBase.prototype, "size", {
-                get: function () {
-                    return this._textfiled.size;
-                },
-                set: function (value) {
-                    this._textfiled.size = value;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            Object.defineProperty(richTextFiledBase.prototype, "textColor", {
-                get: function () {
-                    return this._textfiled.textColor;
-                },
-                set: function (value) {
-                    this._textfiled.textColor = value;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            Object.defineProperty(richTextFiledBase.prototype, "stroke", {
-                get: function () {
-                    return this._textfiled.stroke;
-                },
-                set: function (value) {
-                    this._textfiled.stroke = value;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            Object.defineProperty(richTextFiledBase.prototype, "strokeColor", {
-                get: function () {
-                    return this._textfiled.strokeColor;
-                },
-                set: function (value) {
-                    this._textfiled.strokeColor = value;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            Object.defineProperty(richTextFiledBase.prototype, "lineSpacing", {
-                get: function () {
-                    return this._textfiled.lineSpacing;
-                },
-                set: function (value) {
-                    this._textfiled.lineSpacing = value;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            Object.defineProperty(richTextFiledBase.prototype, "bold", {
-                get: function () {
-                    return this._textfiled.bold;
-                },
-                set: function (value) {
-                    this._textfiled.bold = value;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            Object.defineProperty(richTextFiledBase.prototype, "italic", {
-                get: function () {
-                    return this._textfiled.italic;
-                },
-                set: function (value) {
-                    this._textfiled.italic = value;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            Object.defineProperty(richTextFiledBase.prototype, "fontFamily", {
-                get: function () {
-                    return this._textfiled.fontFamily;
-                },
-                set: function (value) {
-                    this._textfiled.fontFamily = value;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            return richTextFiledBase;
-        }(egret.DisplayObjectContainer));
-        fields.richTextFiledBase = richTextFiledBase;
-        __reflect(richTextFiledBase.prototype, "tubao.fields.richTextFiledBase");
-    })(fields = tubao.fields || (tubao.fields = {}));
-})(tubao || (tubao = {}));
-var tubao;
-(function (tubao) {
-    var layer;
-    (function (layer_1) {
-        /**
-         * EUI层
-         */
-        var layer = (function (_super) {
-            __extends(layer, _super);
-            //UILayer 是 Group 的子类，它除了具有容器的所有标准功能，还能够自动保持自身尺寸始终与舞台尺寸相同
-            function layer() {
-                var _this = _super.call(this) || this;
-                _this.percentWidth = 100;
-                //相对父级容器宽度的百分比
-                _this.percentHeight = 100;
-                //相对父级容器高度的百分比
-                _this.touchEnabled = true;
-                //接收用户操作，比如触屏点击等等
-                _this.touchThrough = true;
-                return _this;
-                //允许点击穿透
-            }
-            return layer;
-        }(eui.UILayer));
-        layer_1.layer = layer;
-        __reflect(layer.prototype, "tubao.layer.layer");
-    })(layer = tubao.layer || (tubao.layer = {}));
-})(tubao || (tubao = {}));
-var tubao;
-(function (tubao) {
-    var sound;
-    (function (sound_1) {
-        /**
-         * Created by yangsong on 15-1-14.
-         * Sound基类
-         */
-        var BaseSound = (function () {
             /**
-             * 构造函数
+             * 替换当前项目插槽内容用外部项目的指定插槽
+             * @param {string} dragonBonesName 外部项目名字，DragonBonesData 实例的缓存名称
+             * @param {string} armatureName 骨架数据名称。
+             * @param {string} slotName 插槽数据名称。
+             * @param {string} displayName 显示对象数据名称。
+             * @param {dragonBones.Slot} slot 指定的插槽
+             * @param {number} displayIndex 被替换的显示对象数据的索引。 （如果未设置，则替换当前的显示对象数据）
              */
-            function BaseSound() {
+            DBbasice.prototype.thisDBSlotReplaceOutsideDBSlot = function (dragonBonesName, armatureName, slotName, displayName, slot, displayIndex) {
                 var _this = this;
-                this._cache = {};
-                this._loadingCache = new Array();
-                setInterval(function () { _this.dealSoundTimer(); }, 1 * 60 * 1000);
-            }
-            /**
-             * 处理音乐文件的清理
-             */
-            BaseSound.prototype.dealSoundTimer = function () {
-                var currTime = egret.getTimer();
-                var keys = Object.keys(this._cache);
-                for (var i = 0, len = keys.length; i < len; i++) {
-                    var key = keys[i];
-                    if (!this.checkCanClear(key))
-                        continue;
-                    if (currTime - this._cache[key] >= sound_1.manager.CLEAR_TIME) {
-                        //console.log(key + "已clear")
-                        delete this._cache[key];
-                        RES.destroyRes(key);
+                if (slot) {
+                    //插槽存在
+                    if (slot.display) {
+                        //显示对象存在
+                        if (slot.display.texture) {
+                            //纹理存在
+                            slot.display.visible = false;
+                            //隐藏图片，防止闪出几秒之前纹理
+                        }
                     }
                 }
+                RES.getResAsync(dragonBonesName + "_ske_json", function (skeJson) {
+                    //龙骨原始数据
+                    RES.getResAsync(dragonBonesName + "_tex_json", function (texJson) {
+                        //贴图数据
+                        RES.getResAsync(dragonBonesName + "_tex_png", function (texPng) {
+                            //贴图纹理
+                            if (!_this.dbDataList[skeJson.name]) {
+                                //没有加载完成的时候才需要写入缓存工厂中。
+                                _this.dbDataList[skeJson.name] = true;
+                                //记录为加载完成写入记录
+                                _this.dbFactory.parseDragonBonesData(skeJson);
+                                //将原始数据解析为 DragonBonesData 实例，并缓存到工厂中。
+                                _this.dbFactory.parseTextureAtlasData(texJson, texPng);
+                                //将原始贴图集数据和贴图集对象解析为 TextureAtlasData 实例，并缓存到工厂中。
+                            }
+                            _this.dbFactory.replaceSlotDisplay(dragonBonesName, armatureName, slotName, displayName, slot, displayIndex);
+                            //用特定的显示对象数据替换特定插槽当前的显示对象数据。
+                            slot['clothId'] = displayName;
+                            //写入替换id
+                            slot.display.name = slotName;
+                            //设置显示对象名字，用于未来标记
+                            _this.initYes = true;
+                            //记录初始化完成
+                            slot.display.visible = true;
+                            //显示图片
+                        }, _this);
+                    }, _this);
+                }, this);
             };
             /**
-             * 获取Sound
-             * @param key
-             * @returns {egret.Sound}
+             * 资源加载
+             * @param {string} name 龙骨项目名字
              */
-            BaseSound.prototype.getSound = function (key) {
-                var sound = RES.getRes(key);
-                if (sound) {
-                    if (this._cache[key]) {
-                        this._cache[key] = egret.getTimer();
-                    }
+            DBbasice.prototype.lodin = function (name) {
+                var _this = this;
+                RES.getResAsync(name + "_ske_json", function (skeJson) {
+                    //龙骨原始数据
+                    RES.getResAsync(name + "_tex_json", function (texJson) {
+                        //贴图数据
+                        RES.getResAsync(name + "_tex_png", function (texPng) {
+                            //贴图纹理
+                            _this.dbBonesData = _this.dbFactory.parseDragonBonesData(skeJson);
+                            //龙骨数据解析，骨架数据
+                            _this.dbtexureData = _this.dbFactory.parseTextureAtlasData(texJson, texPng);
+                            //解析图集数据，图片纹理切图数据，图片纹理像素数据
+                            _this.dbFactory.addDragonBonesData(_this.dbBonesData);
+                            //添加龙骨数据到工厂
+                            _this.dbFactory.addTextureAtlasData(_this.dbtexureData);
+                            //解析的图集数据添加到工厂
+                            //循环遍历全部骨骼
+                            for (var a in _this.dbBonesData.armatureNames) {
+                                var skeletonName = _this.dbBonesData.armatureNames[a];
+                                //骨骼名字
+                                _this.skeleton[skeletonName] = _this.dbFactory.buildArmature(skeletonName);
+                                //创建骨架
+                                _this.dbFactory.clock.add(_this.skeleton[skeletonName]);
+                                //龙骨时间控制
+                            }
+                            _this.initYes = true;
+                            //记录初始化完成
+                            var daterEvent = new DB.dbEvent(DB.dbEvent.lodingOver);
+                            _this.dispatchEvent(daterEvent);
+                            //发送完成事件
+                        }, _this);
+                    }, _this);
+                }, this);
+            };
+            //骨架缩放状态
+            /**
+             * 设置当前骨架是否翻转
+             */
+            DBbasice.prototype.flipSkeleton = function (skeletonName, type) {
+                var skeleton = this.nameGetSkeleton(skeletonName).display;
+                if (type) {
+                    skeleton.scaleX = -Math.abs(skeleton.scaleX);
                 }
                 else {
-                    if (this._loadingCache.indexOf(key) != -1) {
-                        return null;
+                    skeleton.scaleX = Math.abs(skeleton.scaleX);
+                }
+            };
+            Object.defineProperty(DBbasice.prototype, "flip", {
+                /**
+                 * 全部骨架翻转设置
+                 * @param {boolean} type 是否翻转
+                 */
+                get: function () {
+                    return this._flip;
+                },
+                /**
+                 * 全部骨架翻转设置
+                 * @param {boolean} type 是否翻转
+                 */
+                set: function (type) {
+                    if (type) {
+                        for (var a in this.skeleton) {
+                            this.skeleton[a].display.scaleX = -Math.abs(this.skeleton[a].display.scaleX);
+                        }
                     }
-                    this._loadingCache.push(key);
-                    RES.getResAsync(key, this.onResourceLoadComplete, this);
+                    else {
+                        for (var a in this.skeleton) {
+                            this.skeleton[a].display.scaleX = Math.abs(this.skeleton[a].display.scaleX);
+                        }
+                    }
+                    this._flip = type;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            /**
+             * 设置当前骨骼的动画播放速度
+             * @param skeletonName 骨架名字
+             * @param speed 速度
+             */
+            DBbasice.prototype.speedSkeleton = function (skeletonName, speed) {
+                var skeleton = this.nameGetSkeleton(skeletonName).animation;
+                skeleton.timeScale = speed;
+            };
+            Object.defineProperty(DBbasice.prototype, "speed", {
+                /**
+                 * 设置全部骨骼播放速度
+                 * @param speed 速度
+                 */
+                set: function (speed) {
+                    for (var a in this.skeleton) {
+                        this.skeleton[a].animation.timeScale = speed;
+                    }
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(DBbasice.prototype, "scale", {
+                //骨架缩放状态
+                /**
+                 * 全体骨架缩放
+                 * @param num 缩放倍数
+                 */
+                get: function () {
+                    return this._scale;
+                },
+                /**
+                 * 全体骨架缩放
+                 * @param num 缩放倍数
+                 */
+                set: function (num) {
+                    for (var a in this.skeleton) {
+                        this._scale = num;
+                        this.scaleSetSkeletonName(a, num);
+                    }
+                },
+                enumerable: true,
+                configurable: true
+            });
+            /**
+             * 根据名字进行骨架缩放
+             * @param skeletonName 骨架名字
+             */
+            DBbasice.prototype.scaleSetSkeletonName = function (skeletonName, num) {
+                var skeleton = this.nameGetSkeleton(skeletonName).display;
+                if (skeleton.scaleX) {
+                    skeleton.scaleX = num;
                 }
-                return sound;
-            };
-            /**
-             * 资源加载完成
-             * @param event
-             */
-            BaseSound.prototype.onResourceLoadComplete = function (data, key) {
-                var index = this._loadingCache.indexOf(key);
-                if (index != -1) {
-                    this._loadingCache.splice(index, 1);
-                    this._cache[key] = egret.getTimer();
-                    this.loadedPlay(key);
+                else {
+                    skeleton.scaleX = -num;
+                }
+                if (skeleton.scaleY) {
+                    skeleton.scaleY = num;
+                }
+                else {
+                    skeleton.scaleY = -num;
                 }
             };
             /**
-             * 资源加载完成后处理播放，子类重写
-             * @param key
+             * 骨架显示隐藏
+             * @param skeletonName 骨架名字
+             * @param type 显示隐藏
              */
-            BaseSound.prototype.loadedPlay = function (key) {
+            DBbasice.prototype.skeletonVisible = function (skeletonName, type) {
+                this.nameGetSkeleton(skeletonName).display.visible = type;
+            };
+            //——————————————————————————————————————————————————————————底层操作显示对象获取————————————————————————————————————————————————————————————————————————————
+            /**
+             * 根据名字获取到骨架显示对象
+             * @param skeletonName 骨架名字
+             */
+            DBbasice.prototype.displaySkeleton = function (skeletonName) {
+                var skeleton = this.nameGetSkeleton(skeletonName).display;
+                //骨架显示对象
+                return skeleton;
             };
             /**
-             * 检测一个文件是否要清除，子类重写
-             * @param key
-             * @returns {boolean}
+             * 根据名字获取到插槽显示对象
+             * @param skeletonName 骨架名字
+             * @param slotName 插槽名字
              */
-            BaseSound.prototype.checkCanClear = function (key) {
-                return true;
+            DBbasice.prototype.displaySlot = function (skeletonName, slotName) {
+                return this.nameGetSlot(skeletonName, slotName).display;
             };
-            return BaseSound;
-        }());
-        sound_1.BaseSound = BaseSound;
-        __reflect(BaseSound.prototype, "tubao.sound.BaseSound");
-    })(sound = tubao.sound || (tubao.sound = {}));
+            /**
+             * 根据名字获取到骨节坐标系偏移变换
+             * @param skeletonName 骨架名字
+             * @param slotName 骨节名字
+             */
+            DBbasice.prototype.displayBone = function (skeletonName, boneName) {
+                return this.nameGetBone(skeletonName, boneName).offset;
+            };
+            //——————————————————————————————————————————————————————————底层操作对象获取————————————————————————————————————————————————————————————————————————————
+            /**
+             * 根据名字获取插槽对象
+             * @param skeletonName 骨架名字
+             * @param slotName 插槽名字
+             */
+            DBbasice.prototype.nameGetSlot = function (skeletonName, slotName) {
+                var skeleton = this.nameGetSkeleton(skeletonName);
+                //获取到骨骼
+                var slot = skeleton.getSlot(slotName);
+                //获取到骨节
+                if (!slot) {
+                    //console.error(`${slotName}-插槽不存在于-${skeleton.name}-骨架上`);
+                }
+                return slot;
+            };
+            /**
+             * 根据名字获取骨节对象
+             * @param skeletonName 骨架名字
+             * @param boneName 骨骼节点名字
+             */
+            DBbasice.prototype.nameGetBone = function (skeletonName, boneName) {
+                var skeleton = this.nameGetSkeleton(skeletonName);
+                //获取到骨骼
+                var bone = skeleton.getBone(boneName);
+                //获取到骨节
+                if (!bone) {
+                    console.log(boneName + "-\u9AA8\u8282\u4E0D\u5B58\u5728\u4E8E-" + skeleton.name + "-\u9AA8\u67B6\u4E0A");
+                }
+                return bone;
+            };
+            /**
+             * 根据名字获取骨架对象
+             * @param skeletonName 骨架名字
+             */
+            DBbasice.prototype.nameGetSkeleton = function (skeletonName) {
+                if (this.skeleton[skeletonName] == undefined) {
+                    if (this.dbBonesData) {
+                        console.error(skeletonName + "-\u9AA8\u67B6\u4E0D\u5B58\u5728\u4E8E-" + this.dbBonesData.name + "-\u6570\u636E\u8282\u70B9\u4E0A");
+                    }
+                    else {
+                        console.error(skeletonName + "-\u9AA8\u67B6\u4E0D\u5B58\u5728\u4E8E\u6570\u636E\u8282\u70B9\u4E0A");
+                    }
+                }
+                return this.skeleton[skeletonName];
+            };
+            return DBbasice;
+        }(eui.Component));
+        DB.DBbasice = DBbasice;
+        __reflect(DBbasice.prototype, "tubao.DB.DBbasice");
+    })(DB = tubao.DB || (tubao.DB = {}));
+})(tubao || (tubao = {}));
+var tubao;
+(function (tubao) {
+    var utils;
+    (function (utils) {
+        /**
+         * 让显示对象可以拖动
+         * @param {egret.DisplayObject} display 显示对象
+         * @param {egret.DisplayObject} arr 显示对象连带扩展
+         */
+        function dragDisplauy(display) {
+            var arr = [];
+            for (var _i = 1; _i < arguments.length; _i++) {
+                arr[_i - 1] = arguments[_i];
+            }
+            var _touchStatus = false;
+            //当前触摸状态，按下时，值为true
+            var _distance = new egret.Point();
+            //鼠标点击时，鼠标全局坐标与_bird的位置差
+            var disArr = [];
+            var disArrX = []; //相对距离x
+            var disArrY = []; //相对距离y
+            //显示对象连带扩展
+            disArr = arr;
+            for (var a in arr) {
+                disArr[a] = arr[a];
+                //相对对象
+                disArrX[a] = arr[a].x - display.x;
+                //相对对象x,两个对象做差
+                disArrY[a] = arr[a].y - display.y;
+                //相对对象y,两个对象做差
+            }
+            display.addEventListener(egret.TouchEvent.TOUCH_BEGIN, mouseDown, this);
+            //按下手指
+            display.addEventListener(egret.TouchEvent.TOUCH_END, mouseUp, this);
+            //抬起手指
+            display.addEventListener(egret.Event.REMOVED, removed, this);
+            //卸载在显示列表
+            /**
+             * 卸载时清除
+             */
+            function removed() {
+                display.removeEventListener(egret.TouchEvent.TOUCH_BEGIN, mouseDown, this);
+                //按下手指
+                display.removeEventListener(egret.TouchEvent.TOUCH_END, mouseUp, this);
+                //抬起手指
+                display.removeEventListener(egret.Event.REMOVED, removed, this);
+                //卸载在显示列表
+            }
+            /**
+             * 按下手指
+             */
+            function mouseDown(evt) {
+                _touchStatus = true;
+                _distance.x = evt.stageX - display.x;
+                _distance.y = evt.stageY - display.y;
+                display.stage.addEventListener(egret.TouchEvent.TOUCH_MOVE, mouseMove, this);
+            }
+            /**
+             * 滑动屏幕
+             */
+            function mouseMove(evt) {
+                if (_touchStatus) {
+                    display.x = evt.stageX - _distance.x;
+                    display.y = evt.stageY - _distance.y;
+                    for (var a in disArr) {
+                        disArr[a].x = evt.stageX - _distance.x + disArrX[a];
+                        disArr[a].y = evt.stageY - _distance.y + disArrY[a];
+                    }
+                }
+            }
+            /**
+             * 抬起手指
+             */
+            function mouseUp(evt) {
+                _touchStatus = false;
+                display.stage.removeEventListener(egret.TouchEvent.TOUCH_MOVE, mouseMove, this);
+            }
+        }
+        utils.dragDisplauy = dragDisplauy;
+        /**
+         * 继承后显示对象可拖动
+         */
+        var drag = (function (_super) {
+            __extends(drag, _super);
+            //鼠标点击时，鼠标全局坐标与_bird的位置差
+            function drag() {
+                var _this = _super.call(this) || this;
+                _this._touchStatus = false;
+                //当前触摸状态，按下时，值为true
+                _this._distance = new egret.Point();
+                _this.addEventListener(egret.TouchEvent.TOUCH_BEGIN, _this.mouseDown, _this);
+                //按下手指
+                _this.addEventListener(egret.TouchEvent.TOUCH_END, _this.mouseUp, _this);
+                //抬起手指
+                _this.addEventListener(egret.Event.REMOVED, _this.removed, _this);
+                return _this;
+                //卸载在显示列表
+            }
+            /**
+             * 卸载时清除
+             */
+            drag.prototype.removed = function () {
+                this.removeEventListener(egret.TouchEvent.TOUCH_BEGIN, this.mouseDown, this);
+                //按下手指
+                this.removeEventListener(egret.TouchEvent.TOUCH_END, this.mouseUp, this);
+                //抬起手指
+                this.removeEventListener(egret.Event.REMOVED, this.removed, this);
+                //卸载在显示列表
+            };
+            /**
+             * 按下手指
+             */
+            drag.prototype.mouseDown = function (evt) {
+                this._touchStatus = true;
+                this._distance.x = evt.stageX - this.x;
+                this._distance.y = evt.stageY - this.y;
+                this.stage.addEventListener(egret.TouchEvent.TOUCH_MOVE, this.mouseMove, this);
+            };
+            /**
+             * 滑动屏幕
+             */
+            drag.prototype.mouseMove = function (evt) {
+                if (this._touchStatus) {
+                    this.x = evt.stageX - this._distance.x;
+                    this.y = evt.stageY - this._distance.y;
+                }
+            };
+            /**
+             * 抬起手指
+             */
+            drag.prototype.mouseUp = function (evt) {
+                this._touchStatus = false;
+                this.stage.removeEventListener(egret.TouchEvent.TOUCH_MOVE, this.mouseMove, this);
+            };
+            return drag;
+        }(eui.Component));
+        utils.drag = drag;
+        __reflect(drag.prototype, "tubao.utils.drag");
+    })(utils = tubao.utils || (tubao.utils = {}));
+})(tubao || (tubao = {}));
+var tubao;
+(function (tubao) {
+    var Appli;
+    (function (Appli) {
+    })(Appli = tubao.Appli || (tubao.Appli = {}));
 })(tubao || (tubao = {}));
 /**
- * 遥感
+ * 闪光效果工具模块
  */
 var tubao;
 (function (tubao) {
-    var joyStick;
-    (function (joyStick_1) {
-        var joyStickEvent = (function () {
-            function joyStickEvent() {
-            }
-            /** 摇杆按下开始接受事件时候派发 */
-            joyStickEvent.EVENT_JOY_START = "event_joy_start";
-            /** 触摸抬起后出发摇杆本次摇杆事件结束 */
-            joyStickEvent.EVENT_JOY_END = "event_joy_end";
-            /** 摇杆角度改变时候派发 */
-            joyStickEvent.EVENT_JOY_CHANGE = "event_joy_change";
-            /** 初始化摇杆完成后触发 */
-            joyStickEvent.EVENT_INIT_COMPLETE = "event_init_complete";
-            return joyStickEvent;
-        }());
-        joyStick_1.joyStickEvent = joyStickEvent;
-        __reflect(joyStickEvent.prototype, "tubao.joyStick.joyStickEvent");
-        var joyStickType = (function () {
-            function joyStickType() {
-            }
-            /** 四方位 */
-            joyStickType.TYPE_FOUR = 4;
-            /** 八方为 */
-            joyStickType.TYPE_EIGHT = 8;
-            return joyStickType;
-        }());
-        joyStick_1.joyStickType = joyStickType;
-        __reflect(joyStickType.prototype, "tubao.joyStick.joyStickType");
-        var JoyStickComponent = (function (_super) {
-            __extends(JoyStickComponent, _super);
+    var Effect;
+    (function (Effect) {
+        var flash;
+        (function (flash) {
             /**
-             * 初始化摇杆参数
-             * @param type 方向为定义在 joyStickType类下 目前仅实现八方为
-             * @param joyBg 摇杆背景纹理(可选)
-             * @param joyStick 摇杆纹理(可选)
-             * @param skin //皮肤文件(可选)如果用exml必须满足 有_joybg和_joyStick两个eui.image控件
+             * 开始发光闪烁
+             * @param obj
              */
-            function JoyStickComponent(type, joyBg, joyStick, skin) {
-                var _this = _super.call(this) || this;
-                _this._minAlpha = 0.2;
-                _this._maxAlpha = 0.5;
-                _this._angle = 0; //当前角度
-                _this._bgRadius = 0; //背景半径
-                _this._joyRadius = 0; //摇杆的半径
-                _this._touchID = 0;
-                _this._isSkinFlag = false;
-                _this._type = type;
-                if (skin) {
-                    _this._isSkinFlag = true;
-                    _this.once(egret.Event.COMPLETE, function () {
-                        _this._isSkinFlag = false;
-                        _this.childrenCreated();
-                    }, _this);
+            function startFlash(obj, flashColor, flashTime) {
+                var glowFilter = obj["flashFilter"];
+                if (!glowFilter) {
+                    var color = flashColor; /// 光晕的颜色，十六进制，不包含透明度
+                    var alpha = 1; /// 光晕的颜色透明度，是对 color 参数的透明度设定。有效值为 0.0 到 1.0。例如，0.8 设置透明度值为 80%。
+                    var blurX = 35; /// 水平模糊量。有效值为 0 到 255.0（浮点）
+                    var blurY = 35; /// 垂直模糊量。有效值为 0 到 255.0（浮点）
+                    var strength = 2; /// 压印的强度，值越大，压印的颜色越深，而且发光与背景之间的对比度也越强。有效值为 0 到 255。暂未实现
+                    var quality = 3 /* HIGH */; /// 应用滤镜的次数，建议用 BitmapFilterQuality 类的常量来体现
+                    glowFilter = new egret.GlowFilter(color, alpha, blurX, blurY, strength, quality);
+                    obj.filters = [glowFilter];
+                    obj["flashFilter"] = glowFilter;
                 }
-                else {
-                    if (joyBg && joyStick) {
-                        _this._joybg = new eui.Image(joyBg);
-                        _this._joyStick = new eui.Image(joyStick);
-                    }
-                }
-                return _this;
+                egret.Tween.get(glowFilter)
+                    .to({ "alpha": 0 }, flashTime)
+                    .to({ "alpha": 1 }, flashTime)
+                    .call(this.startFlash, this, [obj, flashColor, flashTime]);
             }
-            JoyStickComponent.prototype.childrenCreated = function () {
-                _super.prototype.childrenCreated.call(this);
-                if (this._isSkinFlag)
-                    return;
-                //初始化设置一些数据
-                if (!this._joybg.parent)
-                    this.addChild(this._joybg);
-                if (!this._joyStick.parent)
-                    this.addChild(this._joyStick);
-                this.width = this._joybg.width;
-                this.height = this._joybg.height;
-                //初始化半径
-                this._bgRadius = this._joybg.texture.textureWidth / 2;
-                this._joyRadius = this._joyStick.texture.textureWidth / 2;
-                this._joyStick.anchorOffsetX = this._joyStick.texture.textureWidth / 2;
-                this._joyStick.anchorOffsetY = this._joyStick.texture.textureHeight / 2;
-                this._initJoyPoint = new egret.Point(this.width / 2, this.height / 2);
-                this._joyStick.x = this._initJoyPoint.x;
-                this._joyStick.y = this._initJoyPoint.y;
-                this.alpha = this._minAlpha;
-                this.touchEnabled = true;
-                this.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.onTouchBegin, this);
-                this.dispatchEvent(new egret.Event(joyStickEvent.EVENT_INIT_COMPLETE));
-            };
-            JoyStickComponent.prototype.onTouchBegin = function (e) {
-                var _this = this;
-                this.showJoy(function () {
-                    _this._mouseX = e.stageX;
-                    _this._mouseY = e.stageY;
-                    _this.stage.addEventListener(egret.TouchEvent.TOUCH_MOVE, _this.onTouchMove, _this);
-                    _this.stage.addEventListener(egret.TouchEvent.TOUCH_END, _this.onTouchEnd, _this);
-                    _this.dispatchEvent(new egret.Event(joyStickEvent.EVENT_JOY_START));
-                });
-            };
-            JoyStickComponent.prototype.onTouchMove = function (e) {
-                if (this._touchID == 0) {
-                    this._touchID = e.touchPointID;
-                }
-                if (e.touchPointID != this._touchID)
-                    return;
-                var moveX = e.stageX - this._mouseX;
-                var moveY = e.stageY - this._mouseY;
-                //本次移动亮
-                var cx = this._joyStick.x;
-                var cy = this._joyStick.y;
-                moveX = cx + moveX;
-                moveY = cy + moveY;
-                //计算当前位置的点的角度要减去初始位置
-                var rx = moveX - this._initJoyPoint.x;
-                var ry = this._initJoyPoint.y - moveY;
-                var atan = rx == 0 ? 0 : ry / rx;
-                var radian = Math.atan(atan);
-                var quadrant;
-                //计算象限
-                if (rx < 0) {
-                    if (ry >= 0) {
-                        this._angle = radian / Math.PI * 180 + 180;
-                        quadrant = 2;
-                    }
-                    else {
-                        this._angle = radian / Math.PI * 180 + 180;
-                        quadrant = 3;
-                    }
-                }
-                else {
-                    //x有半轴
-                    if (ry >= 0) {
-                        this._angle = radian / Math.PI * 180;
-                        quadrant = 1;
-                    }
-                    else {
-                        this._angle = radian / Math.PI * 180 + 360;
-                        quadrant = 4;
-                    }
-                }
-                //这里区分方向类别
-                if (this._type == joyStickType.TYPE_FOUR) {
-                    //四方向
-                    if (this._angle >= 0 && this._angle < 45) {
-                        this._angle = 0;
-                    }
-                    else if (this._angle >= 45 && this._angle < 90) {
-                        this._angle = 90;
-                    }
-                    else if (this._angle >= 90 && this._angle < 135) {
-                        this._angle = 90;
-                    }
-                    else if (this._angle >= 135 && this._angle < 180) {
-                        this._angle = 180;
-                    }
-                    else if (this._angle >= 180 && this._angle < 225) {
-                        this._angle = 180;
-                    }
-                    else if (this._angle >= 225 && this._angle < 270) {
-                        this._angle = 270;
-                    }
-                    else if (this._angle >= 270 && this._angle < 315) {
-                        this._angle = 270;
-                    }
-                    else if (this._angle >= 315 && this._angle < 360) {
-                        this._angle = 0;
-                    }
-                    //根据角度重新赋值
-                }
-                var disance = Math.sqrt(rx * rx + ry * ry) + this._joyRadius;
-                if (disance > this._bgRadius) {
-                    disance = this._bgRadius - this._joyRadius;
-                    moveX = Math.abs(Math.cos(radian) * disance);
-                    moveY = Math.abs(Math.sin(radian) * disance);
-                    switch (quadrant) {
-                        case 1:
-                            moveX += this._initJoyPoint.x;
-                            moveY = this._initJoyPoint.y - moveY;
-                            break;
-                        case 2:
-                            moveX = this._initJoyPoint.x - moveX;
-                            moveY = this._initJoyPoint.y - moveY;
-                            break;
-                        case 3:
-                            moveX = this._initJoyPoint.x - moveX;
-                            moveY += this._initJoyPoint.y;
-                            break;
-                        case 4:
-                            moveX += this._initJoyPoint.x;
-                            moveY += this._initJoyPoint.y;
-                            break;
-                    }
-                }
-                this._joyStick.x = moveX;
-                this._joyStick.y = moveY;
-                this._mouseX = e.stageX;
-                this._mouseY = e.stageY;
-                this.dispatchEventWith(joyStickEvent.EVENT_JOY_CHANGE, false, { angle: this._angle });
-            };
-            JoyStickComponent.prototype.onTouchEnd = function (e) {
-                var _this = this;
-                this._touchID = 0;
-                this.endJoy(function () {
-                    _this.stage.removeEventListener(egret.TouchEvent.TOUCH_MOVE, _this.onTouchMove, _this);
-                    _this.stage.removeEventListener(egret.TouchEvent.TOUCH_END, _this.onTouchEnd, _this);
-                    _this.dispatchEvent(new egret.Event(joyStickEvent.EVENT_JOY_END));
-                });
-            };
-            JoyStickComponent.prototype.showJoy = function (callBack) {
-                egret.Tween.get(this).to({ alpha: this._maxAlpha }, 100).call(function () {
-                    callBack();
-                }, this);
-            };
-            JoyStickComponent.prototype.endJoy = function (callBack) {
-                var _this = this;
-                egret.Tween.get(this._joyStick).to({ x: this._initJoyPoint.x, y: this._initJoyPoint.y }, 100).call(function () {
-                    egret.Tween.get(_this).to({ alpha: _this._minAlpha }, 100).call(function () {
-                        callBack();
-                    }, _this);
-                }, this);
-            };
+            flash.startFlash = startFlash;
             /**
-             * 获取当前角度信息
+             * 停止发光闪烁
+             * @param obj
              */
-            JoyStickComponent.prototype.getAngle = function () {
-                return this._angle;
-            };
-            JoyStickComponent.prototype.destroy = function () {
-                this.stage.removeEventListener(egret.TouchEvent.TOUCH_MOVE, this.onTouchMove, this);
-                this.stage.removeEventListener(egret.TouchEvent.TOUCH_END, this.onTouchEnd, this);
-                egret.Tween.removeTweens(this);
-                egret.Tween.removeTweens(this._joyStick);
-            };
-            return JoyStickComponent;
-        }(eui.Component));
-        joyStick_1.JoyStickComponent = JoyStickComponent;
-        __reflect(JoyStickComponent.prototype, "tubao.joyStick.JoyStickComponent");
-    })(joyStick = tubao.joyStick || (tubao.joyStick = {}));
+            function stopFlash(obj) {
+                var glowFilter = obj["flashFilter"];
+                if (glowFilter) {
+                    egret.Tween.removeTweens(glowFilter);
+                    obj.filters = null;
+                    delete obj["flashFilter"];
+                }
+            }
+            flash.stopFlash = stopFlash;
+            /**
+             * 发光闪烁1次
+             * @param obj
+             */
+            function startFlashOne(obj, flashColor, flashTime) {
+                var glowFilter;
+                var color = flashColor; /// 光晕的颜色，十六进制，不包含透明度
+                var alpha = 1; /// 光晕的颜色透明度，是对 color 参数的透明度设定。有效值为 0.0 到 1.0。例如，0.8 设置透明度值为 80%。
+                var blurX = 35; /// 水平模糊量。有效值为 0 到 255.0（浮点）
+                var blurY = 35; /// 垂直模糊量。有效值为 0 到 255.0（浮点）
+                var strength = 2; /// 压印的强度，值越大，压印的颜色越深，而且发光与背景之间的对比度也越强。有效值为 0 到 255。暂未实现
+                var quality = 3 /* HIGH */; /// 应用滤镜的次数，建议用 BitmapFilterQuality 类的常量来体现
+                glowFilter = new egret.GlowFilter(color, alpha, blurX, blurY, strength, quality);
+                obj.filters = [glowFilter];
+                egret.Tween.get(glowFilter)
+                    .to({ "alpha": 0 }, flashTime)
+                    .to({ "alpha": 1 }, flashTime)
+                    .to({ "alpha": 0 }, flashTime).call(function () {
+                    egret.Tween.removeTweens(obj);
+                });
+            }
+            flash.startFlashOne = startFlashOne;
+        })(flash = Effect.flash || (Effect.flash = {}));
+    })(Effect = tubao.Effect || (tubao.Effect = {}));
 })(tubao || (tubao = {}));
 var tubao;
 (function (tubao) {
@@ -1546,84 +1381,6 @@ var tubao;
         model.xuanZuan = xuanZuan;
     })(model = tubao.model || (tubao.model = {}));
 })(tubao || (tubao = {}));
-var tubao;
-(function (tubao) {
-    /**当前播放的音乐id */
-    var isMusic;
-    /**
-     * 智能播放音乐
-     * @param {number} musicId 音乐id
-     */
-    function music(musicId) {
-        //添加场景中的音乐
-        if (musicId) {
-            musicBase("BGM_" + musicId + "_mp3");
-        }
-        else {
-            tubao.sound.manager.stopBg();
-            isMusic = undefined;
-        }
-    }
-    tubao.music = music;
-    /**
-     * 智能播放音乐
-     * @param {string} musicId 音乐名字
-     */
-    function musicStr(name) {
-        //添加场景中的音乐
-        if (name) {
-            musicBase("BGM_" + name + "_mp3");
-        }
-        else {
-            tubao.sound.manager.stopBg();
-            isMusic = undefined;
-        }
-    }
-    tubao.musicStr = musicStr;
-    /**
-     * 智能播放音乐
-     * @param {number} musicId 音乐id
-     */
-    function musicBase(name) {
-        //添加场景中的音乐
-        if (isMusic != name) {
-            tubao.sound.manager.playBg(name);
-            //播放背景音乐
-            isMusic = name;
-        }
-    }
-})(tubao || (tubao = {}));
-var DebugPlatform = (function () {
-    function DebugPlatform() {
-    }
-    DebugPlatform.prototype.setStorage = function (key, value) {
-        return '';
-    };
-    DebugPlatform.prototype.getStorage = function (key) {
-        return key;
-    };
-    DebugPlatform.prototype.lodinFont = function () {
-    };
-    DebugPlatform.prototype.getUserInfo = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                return [2 /*return*/, { nickName: "username" }];
-            });
-        });
-    };
-    DebugPlatform.prototype.login = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                return [2 /*return*/];
-            });
-        });
-    };
-    return DebugPlatform;
-}());
-__reflect(DebugPlatform.prototype, "DebugPlatform", ["Platform"]);
-if (!window.platform) {
-    window.platform = new DebugPlatform();
-}
 var tubao;
 (function (tubao) {
     /**
@@ -1876,95 +1633,6 @@ var tubao;
     }());
     tubao.res = res;
     __reflect(res.prototype, "tubao.res");
-})(tubao || (tubao = {}));
-var tubao;
-(function (tubao) {
-    /**
-     * 人物标签类
-     */
-    var roleLable = (function (_super) {
-        __extends(roleLable, _super);
-        //标签文本
-        /**
-         * 人物标签类，可以构建一个展示标签出来
-         * @param {string} lable 标签内容
-         * @param {number} color 标签颜色
-         */
-        function roleLable(lable, color) {
-            var _this = _super.call(this) || this;
-            _this.img = new egret.Bitmap();
-            _this.labelName = new egret.TextField();
-            _this.labelName.size = 12;
-            _this.labelName.fontFamily = "Microsoft YaHei";
-            _this.labelName.textColor = 0x969696;
-            _this.labelName.text = lable;
-            _this.labelName.x = 5;
-            _this.labelName.y = 3;
-            _this.width = _this.labelName.width + 10;
-            _this.height = _this.labelName.height + 10;
-            RES.getResAsync("roleLableImg_png", function (e) {
-                _this.img.texture = e;
-            }, _this);
-            _this.img.smoothing = false;
-            _this.img.scale9Grid = new egret.Rectangle(4, 3, 23, 12);
-            _this.img.width = _this.width;
-            _this.img.height = _this.labelName.height + _this.labelName.y + 3;
-            //标签名字
-            tubao.Effect.setColor(_this.img, color);
-            tubao.Effect.controlColorSetColor(_this.labelName, color, -100);
-            _this.addChild(_this.img);
-            _this.addChild(_this.labelName);
-            return _this;
-        }
-        Object.defineProperty(roleLable.prototype, "color", {
-            /**
-             * 获得颜色
-             */
-            get: function () {
-                return this._color;
-            },
-            /**
-             * 设置颜色
-             * @param {number} color 颜色值
-             */
-            set: function (color) {
-                if (!color) {
-                    this.visible = false;
-                    this.width = 0;
-                }
-                this._color = color;
-                tubao.Effect.setColor(this.img, color);
-                tubao.Effect.controlColorSetColor(this.labelName, color, -100);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(roleLable.prototype, "text", {
-            /**
-             * 获得颜色
-             */
-            get: function () {
-                return this._text;
-            },
-            /**
-            * 设置标签文字
-            * @param {number} color 颜色值
-            */
-            set: function (text) {
-                if (!text) {
-                    this.visible = false;
-                    this.width = 0;
-                }
-                this._text = text;
-                this.labelName.text = text;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        return roleLable;
-    }(egret.DisplayObjectContainer));
-    tubao.roleLable = roleLable;
-    __reflect(roleLable.prototype, "tubao.roleLable");
 })(tubao || (tubao = {}));
 /**
  * 敏感词过滤检测
@@ -3723,8 +3391,8 @@ var tubao;
              */
             tool.IsMuiti = function (num, muiti) {
                 var bool = false;
-                for (var a = 0; muiti.length; a++) {
-                    if (num == muiti) {
+                for (var a = 0; a < muiti.length; a++) {
+                    if (muiti[a] == num) {
                         bool = true;
                     }
                 }
@@ -4241,30 +3909,246 @@ var tubao;
         __reflect(buttonCore.prototype, "tubao.base.buttonCore");
     })(base = tubao.base || (tubao.base = {}));
 })(tubao || (tubao = {}));
+/**
+ * 遥感
+ */
 var tubao;
 (function (tubao) {
-    var video;
-    (function (video) {
-        /**
-         * 视频事件类
-         */
-        var videoEvent = (function (_super) {
-            __extends(videoEvent, _super);
-            //视频名字
-            function videoEvent(type, bubbles, cancelable) {
-                if (bubbles === void 0) { bubbles = false; }
-                if (cancelable === void 0) { cancelable = false; }
-                return _super.call(this, type, bubbles, cancelable) || this;
+    var joyStick;
+    (function (joyStick_1) {
+        var joyStickEvent = (function () {
+            function joyStickEvent() {
             }
-            /**视频播放开始 */
-            videoEvent.videoPlay = "播放开始";
-            /**视频播放结束 */
-            videoEvent.videoEnd = "播放结束";
-            return videoEvent;
-        }(egret.Event));
-        video.videoEvent = videoEvent;
-        __reflect(videoEvent.prototype, "tubao.video.videoEvent");
-    })(video = tubao.video || (tubao.video = {}));
+            /** 摇杆按下开始接受事件时候派发 */
+            joyStickEvent.EVENT_JOY_START = "event_joy_start";
+            /** 触摸抬起后出发摇杆本次摇杆事件结束 */
+            joyStickEvent.EVENT_JOY_END = "event_joy_end";
+            /** 摇杆角度改变时候派发 */
+            joyStickEvent.EVENT_JOY_CHANGE = "event_joy_change";
+            /** 初始化摇杆完成后触发 */
+            joyStickEvent.EVENT_INIT_COMPLETE = "event_init_complete";
+            return joyStickEvent;
+        }());
+        joyStick_1.joyStickEvent = joyStickEvent;
+        __reflect(joyStickEvent.prototype, "tubao.joyStick.joyStickEvent");
+        var joyStickType = (function () {
+            function joyStickType() {
+            }
+            /** 四方位 */
+            joyStickType.TYPE_FOUR = 4;
+            /** 八方为 */
+            joyStickType.TYPE_EIGHT = 8;
+            return joyStickType;
+        }());
+        joyStick_1.joyStickType = joyStickType;
+        __reflect(joyStickType.prototype, "tubao.joyStick.joyStickType");
+        var JoyStickComponent = (function (_super) {
+            __extends(JoyStickComponent, _super);
+            /**
+             * 初始化摇杆参数
+             * @param type 方向为定义在 joyStickType类下 目前仅实现八方为
+             * @param joyBg 摇杆背景纹理(可选)
+             * @param joyStick 摇杆纹理(可选)
+             * @param skin //皮肤文件(可选)如果用exml必须满足 有_joybg和_joyStick两个eui.image控件
+             */
+            function JoyStickComponent(type, joyBg, joyStick, skin) {
+                var _this = _super.call(this) || this;
+                _this._minAlpha = 0.2;
+                _this._maxAlpha = 0.5;
+                _this._angle = 0; //当前角度
+                _this._bgRadius = 0; //背景半径
+                _this._joyRadius = 0; //摇杆的半径
+                _this._touchID = 0;
+                _this._isSkinFlag = false;
+                _this._type = type;
+                if (skin) {
+                    _this._isSkinFlag = true;
+                    _this.once(egret.Event.COMPLETE, function () {
+                        _this._isSkinFlag = false;
+                        _this.childrenCreated();
+                    }, _this);
+                }
+                else {
+                    if (joyBg && joyStick) {
+                        _this._joybg = new eui.Image(joyBg);
+                        _this._joyStick = new eui.Image(joyStick);
+                    }
+                }
+                return _this;
+            }
+            JoyStickComponent.prototype.childrenCreated = function () {
+                _super.prototype.childrenCreated.call(this);
+                if (this._isSkinFlag)
+                    return;
+                //初始化设置一些数据
+                if (!this._joybg.parent)
+                    this.addChild(this._joybg);
+                if (!this._joyStick.parent)
+                    this.addChild(this._joyStick);
+                this.width = this._joybg.width;
+                this.height = this._joybg.height;
+                //初始化半径
+                this._bgRadius = this._joybg.texture.textureWidth / 2;
+                this._joyRadius = this._joyStick.texture.textureWidth / 2;
+                this._joyStick.anchorOffsetX = this._joyStick.texture.textureWidth / 2;
+                this._joyStick.anchorOffsetY = this._joyStick.texture.textureHeight / 2;
+                this._initJoyPoint = new egret.Point(this.width / 2, this.height / 2);
+                this._joyStick.x = this._initJoyPoint.x;
+                this._joyStick.y = this._initJoyPoint.y;
+                this.alpha = this._minAlpha;
+                this.touchEnabled = true;
+                this.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.onTouchBegin, this);
+                this.dispatchEvent(new egret.Event(joyStickEvent.EVENT_INIT_COMPLETE));
+            };
+            JoyStickComponent.prototype.onTouchBegin = function (e) {
+                var _this = this;
+                this.showJoy(function () {
+                    _this._mouseX = e.stageX;
+                    _this._mouseY = e.stageY;
+                    _this.stage.addEventListener(egret.TouchEvent.TOUCH_MOVE, _this.onTouchMove, _this);
+                    _this.stage.addEventListener(egret.TouchEvent.TOUCH_END, _this.onTouchEnd, _this);
+                    _this.dispatchEvent(new egret.Event(joyStickEvent.EVENT_JOY_START));
+                });
+            };
+            JoyStickComponent.prototype.onTouchMove = function (e) {
+                if (this._touchID == 0) {
+                    this._touchID = e.touchPointID;
+                }
+                if (e.touchPointID != this._touchID)
+                    return;
+                var moveX = e.stageX - this._mouseX;
+                var moveY = e.stageY - this._mouseY;
+                //本次移动亮
+                var cx = this._joyStick.x;
+                var cy = this._joyStick.y;
+                moveX = cx + moveX;
+                moveY = cy + moveY;
+                //计算当前位置的点的角度要减去初始位置
+                var rx = moveX - this._initJoyPoint.x;
+                var ry = this._initJoyPoint.y - moveY;
+                var atan = rx == 0 ? 0 : ry / rx;
+                var radian = Math.atan(atan);
+                var quadrant;
+                //计算象限
+                if (rx < 0) {
+                    if (ry >= 0) {
+                        this._angle = radian / Math.PI * 180 + 180;
+                        quadrant = 2;
+                    }
+                    else {
+                        this._angle = radian / Math.PI * 180 + 180;
+                        quadrant = 3;
+                    }
+                }
+                else {
+                    //x有半轴
+                    if (ry >= 0) {
+                        this._angle = radian / Math.PI * 180;
+                        quadrant = 1;
+                    }
+                    else {
+                        this._angle = radian / Math.PI * 180 + 360;
+                        quadrant = 4;
+                    }
+                }
+                //这里区分方向类别
+                if (this._type == joyStickType.TYPE_FOUR) {
+                    //四方向
+                    if (this._angle >= 0 && this._angle < 45) {
+                        this._angle = 0;
+                    }
+                    else if (this._angle >= 45 && this._angle < 90) {
+                        this._angle = 90;
+                    }
+                    else if (this._angle >= 90 && this._angle < 135) {
+                        this._angle = 90;
+                    }
+                    else if (this._angle >= 135 && this._angle < 180) {
+                        this._angle = 180;
+                    }
+                    else if (this._angle >= 180 && this._angle < 225) {
+                        this._angle = 180;
+                    }
+                    else if (this._angle >= 225 && this._angle < 270) {
+                        this._angle = 270;
+                    }
+                    else if (this._angle >= 270 && this._angle < 315) {
+                        this._angle = 270;
+                    }
+                    else if (this._angle >= 315 && this._angle < 360) {
+                        this._angle = 0;
+                    }
+                    //根据角度重新赋值
+                }
+                var disance = Math.sqrt(rx * rx + ry * ry) + this._joyRadius;
+                if (disance > this._bgRadius) {
+                    disance = this._bgRadius - this._joyRadius;
+                    moveX = Math.abs(Math.cos(radian) * disance);
+                    moveY = Math.abs(Math.sin(radian) * disance);
+                    switch (quadrant) {
+                        case 1:
+                            moveX += this._initJoyPoint.x;
+                            moveY = this._initJoyPoint.y - moveY;
+                            break;
+                        case 2:
+                            moveX = this._initJoyPoint.x - moveX;
+                            moveY = this._initJoyPoint.y - moveY;
+                            break;
+                        case 3:
+                            moveX = this._initJoyPoint.x - moveX;
+                            moveY += this._initJoyPoint.y;
+                            break;
+                        case 4:
+                            moveX += this._initJoyPoint.x;
+                            moveY += this._initJoyPoint.y;
+                            break;
+                    }
+                }
+                this._joyStick.x = moveX;
+                this._joyStick.y = moveY;
+                this._mouseX = e.stageX;
+                this._mouseY = e.stageY;
+                this.dispatchEventWith(joyStickEvent.EVENT_JOY_CHANGE, false, { angle: this._angle });
+            };
+            JoyStickComponent.prototype.onTouchEnd = function (e) {
+                var _this = this;
+                this._touchID = 0;
+                this.endJoy(function () {
+                    _this.stage.removeEventListener(egret.TouchEvent.TOUCH_MOVE, _this.onTouchMove, _this);
+                    _this.stage.removeEventListener(egret.TouchEvent.TOUCH_END, _this.onTouchEnd, _this);
+                    _this.dispatchEvent(new egret.Event(joyStickEvent.EVENT_JOY_END));
+                });
+            };
+            JoyStickComponent.prototype.showJoy = function (callBack) {
+                egret.Tween.get(this).to({ alpha: this._maxAlpha }, 100).call(function () {
+                    callBack();
+                }, this);
+            };
+            JoyStickComponent.prototype.endJoy = function (callBack) {
+                var _this = this;
+                egret.Tween.get(this._joyStick).to({ x: this._initJoyPoint.x, y: this._initJoyPoint.y }, 100).call(function () {
+                    egret.Tween.get(_this).to({ alpha: _this._minAlpha }, 100).call(function () {
+                        callBack();
+                    }, _this);
+                }, this);
+            };
+            /**
+             * 获取当前角度信息
+             */
+            JoyStickComponent.prototype.getAngle = function () {
+                return this._angle;
+            };
+            JoyStickComponent.prototype.destroy = function () {
+                this.stage.removeEventListener(egret.TouchEvent.TOUCH_MOVE, this.onTouchMove, this);
+                this.stage.removeEventListener(egret.TouchEvent.TOUCH_END, this.onTouchEnd, this);
+                egret.Tween.removeTweens(this);
+                egret.Tween.removeTweens(this._joyStick);
+            };
+            return JoyStickComponent;
+        }(eui.Component));
+        joyStick_1.JoyStickComponent = JoyStickComponent;
+        __reflect(JoyStickComponent.prototype, "tubao.joyStick.JoyStickComponent");
+    })(joyStick = tubao.joyStick || (tubao.joyStick = {}));
 })(tubao || (tubao = {}));
 /// <reference path="panel.ts" />
 var tubao;
@@ -4525,37 +4409,64 @@ var tubao;
 var tubao;
 (function (tubao) {
     /**
-     * 金底棕字标签
+     * 灰度图片类
      */
-    var charTag = (function (_super) {
-        __extends(charTag, _super);
-        /**
-         * 金底棕字标签
-         */
-        function charTag(word) {
+    var grayImg = (function (_super) {
+        __extends(grayImg, _super);
+        function grayImg() {
             var _this = _super.call(this) || this;
-            _this.skinName = "tubao.charTagSkin";
-            _this.char = word;
+            _this.colorMatrix = [
+                0.3, 0.6, 0, 0, 0,
+                0.3, 0.6, 0, 0, 0,
+                0.3, 0.6, 0, 0, 0,
+                0, 0, 0, 1, 0
+            ];
+            _this.colorFlilter = new egret.ColorMatrixFilter(_this.colorMatrix);
             return _this;
+            //颜色矩阵数组
         }
-        Object.defineProperty(charTag.prototype, "char", {
-            get: function () {
-                return this._char;
-            },
+        Object.defineProperty(grayImg.prototype, "gray", {
             /**
-             * 文字内容
+             * 灰度
              */
-            set: function (word) {
-                this.wordLabel.text = word;
-                this._char = word;
+            set: function (type) {
+                if (type) {
+                    //取消灰度
+                    this.filters = null;
+                    this.touchEnabled = true;
+                    this.alpha = 1;
+                }
+                else {
+                    //灰度了
+                    this.filters = [this.colorFlilter];
+                    this.touchEnabled = false;
+                    this.alpha = 0.5;
+                }
             },
             enumerable: true,
             configurable: true
         });
-        return charTag;
-    }(eui.Component));
-    tubao.charTag = charTag;
-    __reflect(charTag.prototype, "tubao.charTag");
+        return grayImg;
+    }(eui.Image));
+    tubao.grayImg = grayImg;
+    __reflect(grayImg.prototype, "tubao.grayImg");
+    /**
+     * 显示对象灰度工具
+     */
+    function gray(dis) {
+        var colorMatrix = [
+            0.3, 0.6, 0, 0, 0,
+            0.3, 0.6, 0, 0, 0,
+            0.3, 0.6, 0, 0, 0,
+            0, 0, 0, 1, 0
+        ];
+        //灰色矩阵
+        var colorFlilter;
+        //滤镜
+        dis.filters = [new egret.ColorMatrixFilter(colorMatrix)];
+        //设置灰度
+    }
+    tubao.gray = gray;
 })(tubao || (tubao = {}));
 /// <reference path = "../utils/drag.ts" />
 var tubao;
@@ -4773,143 +4684,39 @@ var tubao;
         __reflect(selectS.prototype, "tubao.base.selectS");
     })(base = tubao.base || (tubao.base = {}));
 })(tubao || (tubao = {}));
-/**
- * cookie操作类
- */
 var tubao;
 (function (tubao) {
-    var cookie;
-    (function (cookie) {
-        /**游戏的数据库标记 */
-        cookie.label = "Rabbit";
+    /**
+     * 一个点
+     */
+    var dot = (function (_super) {
+        __extends(dot, _super);
         /**
-         * 特殊数据值操作存入前端数字数据，如果第二个参数存在就写入，不存在就查询
-         * @param value 查询的数据列表索引
-         * @param Str 写入的数据
-         *
+         * 一个点
+         * @param {number} x 定位x坐标
+         * @param {number} y 定位y坐标
+         * @param {number} color 颜色
          */
-        function LocalStorageNum(Str0, Str1) {
-            if (Str1 === void 0) { Str1 = null; }
-            if (Str1) {
-                if (Str1) {
-                    return Number(egret.localStorage.setItem(String("Rabbit_" + cookie.label + "_" + Str0), String(Str1)));
-                    //第二个参数存在就写入
-                }
-                else {
-                    console.error("\u7F13\u5B58\u6570\u636E\u5199\u5165\u9519\u8BEF\uFF0Ckey\uFF1A" + Str0 + ",Str:" + Str1);
-                    return Number(egret.localStorage.setItem(String("Rabbit_" + cookie.label + "_" + Str0), String(0)));
-                }
-            }
-            else {
-                if (egret.localStorage.getItem(String("Rabbit_" + cookie.label + "_" + Str0))) {
-                    return Number(egret.localStorage.getItem(String("Rabbit_" + cookie.label + "_" + Str0)));
-                    //第二个参数不存在就查询
-                }
-                else {
-                    return 0;
-                }
-            }
+        function dot(x, y, color) {
+            var _this = _super.call(this) || this;
+            _this.size = 5;
+            _this.bgColor = color;
+            _this.borderColor = 0x666666;
+            _this.borderSize = 0;
+            _this.cornerRadius = 9;
+            _this.halfSize = Math.round(_this.size / 2);
+            _this.graphics.beginFill(_this.bgColor);
+            _this.graphics.lineStyle(_this.borderSize, _this.borderColor);
+            _this.graphics.drawCircle(_this.halfSize, _this.halfSize, _this.halfSize);
+            _this.graphics.endFill();
+            _this.x = x;
+            _this.y = y;
+            return _this;
         }
-        cookie.LocalStorageNum = LocalStorageNum;
-        /**
-         * 获取localStorage缓存数据
-         * @param {string} key 值对
-         * @return {string} 这个key对应的值
-         */
-        function getLocal(key) {
-            var data = egret.localStorage.getItem(key);
-            if (data) {
-                return data;
-            }
-            return "";
-        }
-        cookie.getLocal = getLocal;
-        /**
-         * 设置localStorage缓存数据
-         * @param {string} key 值对
-         * @return {string} 这个key对应的值
-         */
-        function setLocal(key, value) {
-            return egret.localStorage.setItem(key, value);
-        }
-        cookie.setLocal = setLocal;
-        /**
-         * cookie操作，设置一个cookie
-         * @param cname 设置cookie的id
-         * @param cvalue 设置cookie的值
-         * @param exdays 设置cookie在几分钟后失效
-         */
-        function setCookie(cname, cvalue, exdays) {
-            if (tubao.device.isChannel) {
-                //渠道处理
-                platform.setStorage(cname, cvalue);
-            }
-            else {
-                //浏览器平台
-                var d = new Date();
-                d.setUTCMinutes(d.getUTCMinutes() + exdays);
-                document.cookie = cname + "=" + cvalue + "; expires=" + d.toUTCString();
-            }
-        }
-        cookie.setCookie = setCookie;
-        /**
-         * cookie操作，删除一个cookie
-         * @param cname 设置cookie的id
-         * @param cvalue 设置cookie的值
-         * @param exdays 设置cookie在几分钟后失效
-         */
-        function delCookie(cname) {
-            if (tubao.device.isChannel) {
-                //渠道处理
-                platform.setStorage(cname, '');
-            }
-            else {
-                //浏览器平台
-                document.cookie = cname + "=" + "true" + "; expires=Sat, 27 Nov 2010 10:39:38 GMT";
-            }
-        }
-        cookie.delCookie = delCookie;
-        /**
-         * 查询一个cookie的值，不存在返回false
-         * @param cname cookie名
-        */
-        function getCookie(cname) {
-            //查询cookie
-            if (tubao.device.isChannel) {
-                //渠道处理
-                if (platform.getStorage(cname) == '') {
-                    return false;
-                }
-                return platform.getStorage(cname);
-            }
-            else {
-                //不是微信平台
-                var name = cname + "=";
-                var ca = document.cookie.split(';');
-                for (var i = 0; i < ca.length; i++) {
-                    var c = ca[i].trim();
-                    if (c.indexOf(name) == 0)
-                        return c.substring(name.length, c.length);
-                }
-                return false;
-            }
-        }
-        cookie.getCookie = getCookie;
-        /**
-         * 查询一个cookie的值，不存在返回false
-         * @param cname cookie名
-        */
-        function getCookieNum(cname) {
-            var a = getCookie(cname);
-            if (a) {
-                return a;
-            }
-            else {
-                return 0;
-            }
-        }
-        cookie.getCookieNum = getCookieNum;
-    })(cookie = tubao.cookie || (tubao.cookie = {}));
+        return dot;
+    }(egret.Shape));
+    tubao.dot = dot;
+    __reflect(dot.prototype, "tubao.dot");
 })(tubao || (tubao = {}));
 var tubao;
 (function (tubao) {
@@ -4951,14 +4758,18 @@ var tubao;
             }
             //表示当前表情状态，避免粘连，true表示可以进行做表情，false表示不能做表情
             /**
-             * 改变插槽显示对象
-             * @param skeletonName 骨架名字
-             * @param data 包含基础偏移信息，{res,x,y,r}，res:texture资源名字，x：偏移x，y：偏移y，r：偏移旋转
-             * @param time 时间，默认为null，不进行time后变回来，假如传入值则在这个时间后变回来
-             * @param visible 显示隐藏
-             *
+             * 改变插槽显示对象,并且在规定的时间后还原
+             * @param {string} skeletonName 骨架名字
+             * @param {string} Skeleton 插槽名字
+             * @param {number} time 时间，默认为null，不进行time后变回来，假如传入值则在这个时间后变回来
+             * @param {string} imgResName 图片资源名字
+             * @param {number} imgResX 图片资源位置x
+             * @param {number} imgResY 图片资源位置y
+             * @param {number} imgResRotation 图片资源旋转角度
+             * @param {boolean} imgResVisible 图片资源显示隐藏
+             * @param {boolean} lodingType 资源加载类型 true：res管理内置资源，false：外部url方式加载
              */
-            DBuse.prototype.setSlotImgInTime = function (skeletonName, slotName, data, time, visible, lodingType) {
+            DBuse.prototype.setSlotImgInTime = function (skeletonName, slotName, time, imgResName, imgResX, imgResY, imgResRotation, imgResVisible, lodingType) {
                 var _this = this;
                 if (time === void 0) { time = 0; }
                 if (lodingType === void 0) { lodingType = true; }
@@ -4967,35 +4778,38 @@ var tubao;
                 }
                 //显示服装
                 if (time) {
-                    /*if(!this.bqStatic){
-                        return;
-                    }*/
                     var slotData = this.nameGetSlot(skeletonName, slotName);
                     //插槽数据
                     var bmp = new egret.Bitmap(slotData.display.texture);
-                    var dat = slotData.offset;
-                    var thisType = [bmp, dat.x, dat.y, dat.rotation];
-                    this.setSlotImg(skeletonName, slotName, data, visible, lodingType);
+                    //位图资源
+                    var data = slotData.offset;
+                    //相对于骨架或父骨骼坐标系的偏移变换
+                    this.setSlotImg(skeletonName, slotName, imgResName, imgResX, imgResY, imgResRotation, imgResVisible, lodingType);
                     this.bqStatic = false;
                     setTimeout(function () {
-                        _this.setSlotImg(skeletonName, slotName, thisType, visible, lodingType);
+                        _this.setSlotImg(skeletonName, slotName, bmp.texture, data.x, data.y, data.rotation, imgResVisible, lodingType);
                         _this.bqStatic = true;
-                    }, time, thisType);
+                    }, time, this);
                 }
                 else {
-                    this.setSlotImg(skeletonName, slotName, data, visible, lodingType);
+                    this.setSlotImg(skeletonName, slotName, imgResName, imgResX, imgResY, imgResRotation, imgResVisible, lodingType);
                 }
             };
             /**
              * 设置插槽图片内容
-             * @param skeletonName 骨架名字
-             * @param Skeleton 插槽名字
-             * @param data 包含基础偏移信息，{res,x,y,r}，res:texture资源名字，x：偏移x，y：偏移y，r：偏移旋转
+             * @param {string} skeletonName 骨架名字
+             * @param {string} Skeleton 插槽名字
+             * @param {string} imgResName 图片资源名字
+             * @param {number} imgResX 图片资源位置x
+             * @param {number} imgResY 图片资源位置y
+             * @param {number} imgResRotation 图片资源旋转角度
+             * @param {boolean} imgResVisible 图片资源显示隐藏
+             * @param {boolean} lodingType 资源加载类型 true：res管理内置资源，false：外部url方式加载
              */
-            DBuse.prototype.setSlotImg = function (skeletonName, slotName, data, visible, lodingType) {
+            DBuse.prototype.setSlotImg = function (skeletonName, slotName, imgResName, imgResX, imgResY, imgResRotation, imgResVisible, lodingType) {
                 if (lodingType === void 0) { lodingType = true; }
                 return __awaiter(this, void 0, void 0, function () {
-                    var slot, skeleton, Bitmap;
+                    var slot, Bitmap;
                     return __generator(this, function (_a) {
                         switch (_a.label) {
                             case 0:
@@ -5003,34 +4817,28 @@ var tubao;
                                 if (!slot) {
                                     return [2 /*return*/];
                                 }
-                                if (!visible) {
-                                    slot.display.visible = visible;
-                                    return [2 /*return*/];
-                                }
-                                skeleton = this.displaySkeleton(skeletonName);
-                                Bitmap = null;
-                                if (!(typeof (data[0]) == "object")) return [3 /*break*/, 1];
-                                Bitmap = data[0];
-                                return [3 /*break*/, 3];
-                            case 1: return [4 /*yield*/, this.reqData(data[0], lodingType)];
-                            case 2:
+                                Bitmap = new egret.Bitmap();
+                                if (!(typeof imgResName == "string")) return [3 /*break*/, 2];
+                                return [4 /*yield*/, this.reqData(imgResName, lodingType)];
+                            case 1:
                                 _a.sent();
                                 //等待加载完成
-                                Bitmap = new egret.Bitmap();
-                                if (lodingType) {
-                                    Bitmap.texture = RES.getRes(data[0]);
-                                }
-                                else {
-                                    Bitmap.texture = RES.getRes(data[0]);
-                                    //Bitmap.texture = RES.getRes("blackBox_png");
-                                }
+                                Bitmap.texture = RES.getRes(imgResName);
+                                return [3 /*break*/, 3];
+                            case 2:
+                                Bitmap.texture = imgResName;
                                 _a.label = 3;
                             case 3:
                                 Bitmap.anchorOffsetX = Bitmap.width / 2;
                                 Bitmap.anchorOffsetY = Bitmap.height / 2;
-                                slot.offset.x = data[1];
-                                slot.offset.y = data[2];
-                                slot.offset.rotation = data[3];
+                                //设置资源定位
+                                Bitmap.visible = imgResVisible;
+                                //显示隐藏
+                                slot.offset.x = imgResX;
+                                slot.offset.y = imgResY;
+                                //定位
+                                slot.offset.rotation = imgResRotation;
+                                //旋转
                                 slot.display = Bitmap;
                                 return [2 /*return*/];
                         }
@@ -5039,6 +4847,8 @@ var tubao;
             };
             /**
              * 请求数据
+             * @param {string} str 资源名字
+             * @param {boolean} lodingType 资源加载类型 true：res管理内置资源，false：外部url方式加载
              */
             DBuse.prototype.reqData = function (str, lodingType) {
                 var _this = this;
@@ -5192,31 +5002,11 @@ var tubao;
             DBuse.prototype.setDBSlotIndex = function (skeletonName, slotName, index) {
                 var slot = this.nameGetSlot(skeletonName, slotName);
                 //插槽对象
-                if (slot.displayList.length > index) {
+                if (slot.displayList.length < index) {
                     console.log("\u63D2\u69FD" + slot.name + "\u7684\u7D22\u5F15index\u4F4D\u7F6E" + index + "\u8BBE\u7F6E\u8D8A\u754C\u4E86,\u9ED8\u8BA4\u7D22\u5F15\u5230\u7B2C\u4E00\u4E2A\uFF01");
                     index = 0;
                 }
                 return slot.displayIndex = index;
-            };
-            /**
-             * 设置插槽当前位置显示对象颜色
-             * @param {string} skeletonName 骨架名字
-             * @param {string} slotName 插槽名字
-             * @param {egret.DisplayObject} color 颜色
-             * @return {egret.DisplayObject} 返回设置颜色的显示对象
-             */
-            DBuse.prototype.setDBSlotColor = function (skeletonName, slotName, color) {
-                var slot = this.nameGetSlot(skeletonName, slotName);
-                //插槽对象
-                if (!slot.display) {
-                    console.log("\u63D2\u69FD" + slot.name + "\u7684\u5F53\u524D\u663E\u793A\u5BF9\u8C61\u4E0D\u5B58\u5728\uFF0C\u65E0\u6CD5\u8BBE\u7F6E\u989C\u8272\uFF01");
-                    return null;
-                }
-                var display = slot.display;
-                //显示对象
-                tubao.Effect.setColor(display, color);
-                //设置颜色
-                return display;
             };
             return DBuse;
         }(DB.DBbasice));
@@ -5280,7 +5070,7 @@ var tubao;
             };
             /**
              * 删除一个指定项
-             * @param {string} nur 删除的nur
+             * @param {number} nur 删除的nur
              */
             downList.prototype.delList = function (nur) {
                 for (var a in this.pool) {
@@ -5342,67 +5132,28 @@ var tubao;
 })(tubao || (tubao = {}));
 var tubao;
 (function (tubao) {
-    /**
-     * 文字逐步显示
-     */
-    var charStep = (function (_super) {
-        __extends(charStep, _super);
-        //显示全部的文本内容
-        function charStep() {
-            var _this = _super.call(this) || this;
-            _this.instantly = 0;
-            //当下文字逐步显示的位置
-            _this.timer = new egret.Timer(100);
-            _this.timer.addEventListener(egret.TimerEvent.TIMER, _this.timerStep, _this);
-            _this.addEventListener(egret.TouchEvent.TOUCH_TAP, _this.touchTap, _this);
-            return _this;
-            //点击后
-        }
+    var list;
+    (function (list) {
         /**
-         * 时间调度
+         * 下拉列表的单个项
          */
-        charStep.prototype.timerStep = function () {
-            if (this._allWord.length > this.instantly - 1) {
-                this.text = this._allWord.substring(0, this.instantly);
-                this.instantly++;
+        var downListNape = (function (_super) {
+            __extends(downListNape, _super);
+            function downListNape(Nur, Name) {
+                var _this = _super.call(this) || this;
+                _this.nur = null;
+                _this.Name = null;
+                _this.skinName = "tubao.list.downListNapeSkin";
+                _this.nur = Nur;
+                _this.Name = Name;
+                _this.lab_nr.text = Name + "(" + Nur + ")";
+                return _this;
             }
-            else {
-                this.timer.stop();
-            }
-        };
-        /**
-         * 点击后显示全部
-         */
-        charStep.prototype.touchTap = function () {
-            this.timer.stop();
-            this.text = this._allWord;
-        };
-        Object.defineProperty(charStep.prototype, "allWord", {
-            /**
-             * 获取说话的全部内容
-             */
-            get: function () {
-                return this._allWord;
-            },
-            /**
-             * 设置说话的全部内容
-             * @param {string} word
-             */
-            set: function (word) {
-                this._allWord = word;
-                //全部的文本内容
-                this.instantly = 0;
-                //重置
-                this.timer.start();
-                //开始
-            },
-            enumerable: true,
-            configurable: true
-        });
-        return charStep;
-    }(eui.Label));
-    tubao.charStep = charStep;
-    __reflect(charStep.prototype, "tubao.charStep");
+            return downListNape;
+        }(eui.Component));
+        list.downListNape = downListNape;
+        __reflect(downListNape.prototype, "tubao.list.downListNape");
+    })(list = tubao.list || (tubao.list = {}));
 })(tubao || (tubao = {}));
 var tubao;
 (function (tubao) {
@@ -5479,302 +5230,66 @@ var tubao;
 var tubao;
 (function (tubao) {
     /**
-     * 时间日期工具
+     * 文字逐步显示
      */
-    var date = (function () {
-        function date() {
+    var charStep = (function (_super) {
+        __extends(charStep, _super);
+        //显示全部的文本内容
+        function charStep() {
+            var _this = _super.call(this) || this;
+            _this.instantly = 0;
+            //当下文字逐步显示的位置
+            _this.timer = new egret.Timer(100);
+            _this.timer.addEventListener(egret.TimerEvent.TIMER, _this.timerStep, _this);
+            _this.addEventListener(egret.TouchEvent.TOUCH_TAP, _this.touchTap, _this);
+            return _this;
+            //点击后
         }
         /**
-         * 根据秒数格式化字符串
-         * @param second 秒数
-         * @param type 1:00:00:00   2:yyyy-mm-dd h:m:s    3:00:00(分:秒)   4:xx天前，xx小时前，xx分钟前    6:00:00(时:分)
-         * @return
-         *
+         * 时间调度
          */
-        date.getFormatBySecond = function (second, type) {
-            if (type === void 0) { type = 1; }
-            var str = "";
-            switch (type) {
-                case 1:
-                    str = this.getFormatBySecond1(second);
-                    break;
-                case 2:
-                    str = this.getFormatBySecond2(second);
-                    break;
-                case 3:
-                    str = this.getFormatBySecond3(second);
-                    break;
-                case 4:
-                    str = this.getFormatBySecond4(second);
-                    break;
-                case 5:
-                    str = this.getFormatBySecond5(second);
-                    break;
-                case 6:
-                    str = this.getFormatBySecond6(second);
-                    break;
-            }
-            return str;
-        };
-        //1: 00:00:00
-        date.getFormatBySecond1 = function (t) {
-            if (t === void 0) { t = 0; }
-            var hourst = Math.floor(t / 3600);
-            var hours;
-            if (hourst == 0) {
-                hours = "00";
+        charStep.prototype.timerStep = function () {
+            if (this._allWord.length > this.instantly - 1) {
+                this.text = this._allWord.substring(0, this.instantly);
+                this.instantly++;
             }
             else {
-                if (hourst < 10)
-                    hours = "0" + hourst;
-                else
-                    hours = "" + hourst;
+                this.timer.stop();
             }
-            var minst = Math.floor((t - hourst * 3600) / 60);
-            var secondt = Math.floor((t - hourst * 3600) % 60);
-            var mins;
-            var sens;
-            if (minst == 0) {
-                mins = "00";
-            }
-            else if (minst < 10) {
-                mins = "0" + minst;
-            }
-            else {
-                mins = "" + minst;
-            }
-            if (secondt == 0) {
-                sens = "00";
-            }
-            else if (secondt < 10) {
-                sens = "0" + secondt;
-            }
-            else {
-                sens = "" + secondt;
-            }
-            return hours + ":" + mins + ":" + sens;
-        };
-        //3:00:00(分:秒)
-        date.getFormatBySecond3 = function (t) {
-            if (t === void 0) { t = 0; }
-            var hourst = Math.floor(t / 3600);
-            var minst = Math.floor((t - hourst * 3600) / 60);
-            var secondt = Math.floor((t - hourst * 3600) % 60);
-            var mins;
-            var sens;
-            if (minst == 0) {
-                mins = "00";
-            }
-            else if (minst < 10) {
-                mins = "0" + minst;
-            }
-            else {
-                mins = "" + minst;
-            }
-            if (secondt == 0) {
-                sens = "00";
-            }
-            else if (secondt < 10) {
-                sens = "0" + secondt;
-            }
-            else {
-                sens = "" + secondt;
-            }
-            return mins + ":" + sens;
-        };
-        //2:yyyy-mm-dd h:m:s
-        date.getFormatBySecond2 = function (time) {
-            var date = new Date(time);
-            var year = date.getFullYear();
-            var month = date.getMonth() + 1; //返回的月份从0-11；
-            var day = date.getDate();
-            var hours = date.getHours();
-            var minute = date.getMinutes();
-            var second = date.getSeconds();
-            return year + "-" + month + "-" + day + " " + hours + ":" + minute + ":" + second;
-        };
-        //4:xx天前，xx小时前，xx分钟前
-        date.getFormatBySecond4 = function (time) {
-            var t = Math.floor(time / 3600);
-            if (t > 0) {
-                if (t > 24) {
-                    return Math.floor(t / 24) + "天前";
-                }
-                else {
-                    return t + "小时前";
-                }
-            }
-            else {
-                return Math.floor(time / 60) + "分钟前";
-            }
-        };
-        date.getFormatBySecond5 = function (time) {
-            //每个时间单位所对应的秒数
-            var oneDay = 3600 * 24;
-            var oneHourst = 3600;
-            var oneMinst = 60;
-            var days = Math.floor(time / oneDay);
-            var hourst = Math.floor(time % oneDay / oneHourst);
-            var minst = Math.floor((time - hourst * oneHourst) / oneMinst); //Math.floor(time % oneDay % oneHourst / oneMinst);
-            var secondt = Math.floor((time - hourst * oneHourst) % oneMinst); //time;
-            var dayss = "";
-            var hourss = "";
-            var minss = "";
-            var secss = "";
-            if (time > 0) {
-                //天
-                if (days == 0) {
-                    dayss = "";
-                    //小时
-                    if (hourst == 0) {
-                        hourss = "";
-                        //分
-                        if (minst == 0) {
-                            minss = "";
-                            if (secondt == 0) {
-                                secss = "";
-                            }
-                            else if (secondt < 10) {
-                                secss = "0" + secondt + "秒";
-                            }
-                            else {
-                                secss = "" + secondt + "秒";
-                            }
-                            return secss;
-                        }
-                        else {
-                            minss = "" + minst + "分";
-                            if (secondt == 0) {
-                                secss = "";
-                            }
-                            else if (secondt < 10) {
-                                secss = "0" + secondt + "秒";
-                            }
-                            else {
-                                secss = "" + secondt + "秒";
-                            }
-                        }
-                        return minss + secss;
-                    }
-                    else {
-                        hourss = hourst + "小时";
-                        if (minst == 0) {
-                            minss = "";
-                            if (secondt == 0) {
-                                secss = "";
-                            }
-                            else if (secondt < 10) {
-                                secss = "0" + secondt + "秒";
-                            }
-                            else {
-                                secss = "" + secondt + "秒";
-                            }
-                            return secss;
-                        }
-                        else if (minst < 10) {
-                            minss = "0" + minst + "分";
-                        }
-                        else {
-                            minss = "" + minst + "分";
-                        }
-                        return hourss + minss;
-                    }
-                }
-                else {
-                    dayss = days + "天";
-                    if (hourst == 0) {
-                        hourss = "";
-                    }
-                    else {
-                        if (hourst < 10)
-                            hourss = "0" + hourst + "小时";
-                        else
-                            hourss = "" + hourst + "小时";
-                        ;
-                    }
-                    return dayss + hourss;
-                }
-            }
-            return "";
-        };
-        //6:00:00(时:分) 
-        date.getFormatBySecond6 = function (t) {
-            if (t === void 0) { t = 0; }
-            var hourst = Math.floor(t / 3600);
-            var minst = Math.floor((t - hourst * 3600) / 60);
-            var houers;
-            var mins;
-            if (hourst == 0) {
-                houers = "00";
-            }
-            else if (hourst < 10) {
-                houers = "0" + hourst;
-            }
-            else {
-                houers = "" + hourst;
-            }
-            if (minst == 0) {
-                mins = "00";
-            }
-            else if (minst < 10) {
-                mins = "0" + minst;
-            }
-            else {
-                mins = "" + minst;
-            }
-            return houers + ":" + mins;
         };
         /**
-         * 获取当前是周几
-         * ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"]
+         * 点击后显示全部
          */
-        date.getDay = function (timestamp) {
-            var date = new Date(timestamp);
-            return date.getDay();
+        charStep.prototype.touchTap = function () {
+            this.timer.stop();
+            this.text = this._allWord;
         };
-        /**
-         * 判定两个时间是否是同一天
-         */
-        date.isSameDate = function (timestamp1, timestamp2) {
-            var date1 = new Date(timestamp1);
-            var date2 = new Date(timestamp2);
-            return date1.getFullYear() == date2.getFullYear()
-                && date1.getMonth() == date2.getMonth()
-                && date1.getDate() == date2.getDate();
-        };
-        /**
-         * 日期格式化
-         */
-        date.format = function (d, fmt) {
-            if (fmt === void 0) { fmt = "yyyy-MM-dd hh:mm:ss"; }
-            var o = {
-                "M+": d.getMonth() + 1,
-                "d+": d.getDate(),
-                "h+": d.getHours(),
-                "m+": d.getMinutes(),
-                "s+": d.getSeconds(),
-                "q+": Math.floor((d.getMonth() + 3) / 3),
-                "S": d.getMilliseconds() //millisecond
-            };
-            if (/(y+)/.test(fmt))
-                fmt = fmt.replace(RegExp.$1, (d.getFullYear() + "").substr(4 - RegExp.$1.length));
-            for (var k in o)
-                if (new RegExp("(" + k + ")").test(fmt))
-                    fmt = fmt.replace(RegExp.$1, RegExp.$1.length == 1 ? o[k] :
-                        ("00" + o[k]).substr(("" + o[k]).length));
-            return fmt;
-        };
-        /**
-         * 计算两个时间相差天数
-         */
-        date.dateDifference = function (timestamp1, timestamp2) {
-            var d_value = Math.abs(timestamp2 - timestamp1);
-            return Math.ceil(d_value / (24 * 60 * 60 * 1000));
-        };
-        return date;
-    }());
-    tubao.date = date;
-    __reflect(date.prototype, "tubao.date");
+        Object.defineProperty(charStep.prototype, "allWord", {
+            /**
+             * 获取说话的全部内容
+             */
+            get: function () {
+                return this._allWord;
+            },
+            /**
+             * 设置说话的全部内容
+             * @param {string} word
+             */
+            set: function (word) {
+                this._allWord = word;
+                //全部的文本内容
+                this.instantly = 0;
+                //重置
+                this.timer.start();
+                //开始
+            },
+            enumerable: true,
+            configurable: true
+        });
+        return charStep;
+    }(eui.Label));
+    tubao.charStep = charStep;
+    __reflect(charStep.prototype, "tubao.charStep");
 })(tubao || (tubao = {}));
 /// <reference path = "tubaoDisplayObjectEditorBase.ts" />
 /**
@@ -6054,76 +5569,37 @@ var tubao;
         Effect.controlColorSetColor = controlColorSetColor;
     })(Effect = tubao.Effect || (tubao.Effect = {}));
 })(tubao || (tubao = {}));
-/**
- * 闪光效果工具模块
- */
-var tubao;
-(function (tubao) {
-    var Effect;
-    (function (Effect) {
-        var flash;
-        (function (flash) {
-            /**
-             * 开始发光闪烁
-             * @param obj
-             */
-            function startFlash(obj, flashColor, flashTime) {
-                var glowFilter = obj["flashFilter"];
-                if (!glowFilter) {
-                    var color = flashColor; /// 光晕的颜色，十六进制，不包含透明度
-                    var alpha = 1; /// 光晕的颜色透明度，是对 color 参数的透明度设定。有效值为 0.0 到 1.0。例如，0.8 设置透明度值为 80%。
-                    var blurX = 35; /// 水平模糊量。有效值为 0 到 255.0（浮点）
-                    var blurY = 35; /// 垂直模糊量。有效值为 0 到 255.0（浮点）
-                    var strength = 2; /// 压印的强度，值越大，压印的颜色越深，而且发光与背景之间的对比度也越强。有效值为 0 到 255。暂未实现
-                    var quality = 3 /* HIGH */; /// 应用滤镜的次数，建议用 BitmapFilterQuality 类的常量来体现
-                    glowFilter = new egret.GlowFilter(color, alpha, blurX, blurY, strength, quality);
-                    obj.filters = [glowFilter];
-                    obj["flashFilter"] = glowFilter;
-                }
-                egret.Tween.get(glowFilter)
-                    .to({ "alpha": 0 }, flashTime)
-                    .to({ "alpha": 1 }, flashTime)
-                    .call(this.startFlash, this, [obj, flashColor, flashTime]);
-            }
-            flash.startFlash = startFlash;
-            /**
-             * 停止发光闪烁
-             * @param obj
-             */
-            function stopFlash(obj) {
-                var glowFilter = obj["flashFilter"];
-                if (glowFilter) {
-                    egret.Tween.removeTweens(glowFilter);
-                    obj.filters = null;
-                    delete obj["flashFilter"];
-                }
-            }
-            flash.stopFlash = stopFlash;
-            /**
-             * 发光闪烁1次
-             * @param obj
-             */
-            function startFlashOne(obj, flashColor, flashTime) {
-                var glowFilter;
-                var color = flashColor; /// 光晕的颜色，十六进制，不包含透明度
-                var alpha = 1; /// 光晕的颜色透明度，是对 color 参数的透明度设定。有效值为 0.0 到 1.0。例如，0.8 设置透明度值为 80%。
-                var blurX = 35; /// 水平模糊量。有效值为 0 到 255.0（浮点）
-                var blurY = 35; /// 垂直模糊量。有效值为 0 到 255.0（浮点）
-                var strength = 2; /// 压印的强度，值越大，压印的颜色越深，而且发光与背景之间的对比度也越强。有效值为 0 到 255。暂未实现
-                var quality = 3 /* HIGH */; /// 应用滤镜的次数，建议用 BitmapFilterQuality 类的常量来体现
-                glowFilter = new egret.GlowFilter(color, alpha, blurX, blurY, strength, quality);
-                obj.filters = [glowFilter];
-                egret.Tween.get(glowFilter)
-                    .to({ "alpha": 0 }, flashTime)
-                    .to({ "alpha": 1 }, flashTime)
-                    .to({ "alpha": 0 }, flashTime).call(function () {
-                    egret.Tween.removeTweens(obj);
-                });
-            }
-            flash.startFlashOne = startFlashOne;
-        })(flash = Effect.flash || (Effect.flash = {}));
-    })(Effect = tubao.Effect || (tubao.Effect = {}));
-})(tubao || (tubao = {}));
+var DebugPlatform = (function () {
+    function DebugPlatform() {
+    }
+    DebugPlatform.prototype.setStorage = function (key, value) {
+        return '';
+    };
+    DebugPlatform.prototype.getStorage = function (key) {
+        return key;
+    };
+    DebugPlatform.prototype.lodinFont = function () {
+    };
+    DebugPlatform.prototype.getUserInfo = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                return [2 /*return*/, { nickName: "username" }];
+            });
+        });
+    };
+    DebugPlatform.prototype.login = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                return [2 /*return*/];
+            });
+        });
+    };
+    return DebugPlatform;
+}());
+__reflect(DebugPlatform.prototype, "DebugPlatform", ["Platform"]);
+if (!window.platform) {
+    window.platform = new DebugPlatform();
+}
 /**
  * 兔宝弹窗效果类，用于放置弹窗面板的效果
  */
@@ -7079,82 +6555,230 @@ var BaseSpriteView = (function (_super) {
 __reflect(BaseSpriteView.prototype, "BaseSpriteView", ["IBaseView"]);
 window["BaseSpriteView"] = BaseSpriteView;
 /**
- * 调试工具类
- * new tubao.deBug.huanDong();
- * new tubao.deBug.secondNewObject()
+ * 设备信息
  */
 var tubao;
 (function (tubao) {
-    var deBug;
-    (function (deBug) {
-        /**
-         * 每秒创建的对象数量
-         */
-        var secondNewObject = (function () {
-            //显示对象数量
-            function secondNewObject() {
-                var _this = this;
-                this.objectNum = [];
-                var panel = new egret.TextField();
-                tubao.layer.LayerManager.UI_Message.addChild(panel);
-                panel.y = 150;
-                panel.height = 300;
-                panel.size = 15;
-                panel.textColor = 0xfff;
-                panel.touchEnabled = false;
-                panel.bold = true;
-                panel.background = true;
-                panel.backgroundColor = 0xffffff;
-                var count = egret.$hashCount;
-                setInterval(function () {
-                    var newCount = egret.$hashCount;
-                    var diff = newCount - count;
-                    count = newCount;
-                    console.log(diff);
-                    panel.text += "\n" + diff;
-                    _this.objectNum.push(diff);
-                }, 1000);
-                setInterval(function () {
-                    panel.text = "对象创建数量：";
-                }, 10000);
-            }
-            return secondNewObject;
-        }());
-        deBug.secondNewObject = secondNewObject;
-        __reflect(secondNewObject.prototype, "tubao.deBug.secondNewObject");
-        var huanDong = (function () {
-            //显示对象数量
-            function huanDong() {
-                this.huan = [egret.Ease.arguments];
-                this.huanString = [egret.Ease.arguments];
-                var a = 0;
-                for (var k in egret.Ease) {
-                    var panel = new egret.TextField();
-                    tubao.layer.LayerManager.UI_Message.addChild(panel);
-                    panel.x = 20;
-                    panel.y = a * 20;
-                    panel.size = 15;
-                    panel.textColor = 0xfff;
-                    panel.touchEnabled = false;
-                    panel.bold = true;
-                    panel.background = true;
-                    panel.backgroundColor = 0xffffff;
-                    panel.text = k + "-------------------------------------------";
-                    var kk = new eui.Image(RES.getRes("basics01_png"));
-                    kk.x = 100;
-                    kk.width = 20;
-                    kk.height = 20;
-                    kk.y = a * 20;
-                    tubao.layer.LayerManager.UI_Message.addChild(kk);
-                    egret.Tween.get(kk, { loop: true }).to({ x: 500 }, 1000, egret.Ease[k]).to({ alpha: 0 }, 1000, egret.Ease[k]);
-                    a++;
+    var device = (function () {
+        function device() {
+        }
+        Object.defineProperty(device, "isHtml5", {
+            /**
+             * 当前是否Html5版本
+             * @returns {boolean}
+             * @constructor
+             */
+            get: function () {
+                return egret.Capabilities.runtimeType == egret.RuntimeType.WEB;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(device, "isNative", {
+            /**
+             * 当前是否是Native版本
+             * @returns {boolean}
+             * @constructor
+             */
+            get: function () {
+                return egret.Capabilities.runtimeType == egret.RuntimeType.NATIVE;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(device, "isChannel", {
+            /**
+             * 当前是否渠道版本,微信，QQ,字节跳动，小米轻游戏
+             * @returns {boolean}
+             * @constructor
+             */
+            get: function () {
+                if (this.isWxGame || this.isQQGame || this.isTTGame || this.isQGame || this.isKSGame) {
+                    return true;
                 }
-            }
-            return huanDong;
-        }());
-        deBug.huanDong = huanDong;
-        __reflect(huanDong.prototype, "tubao.deBug.huanDong");
-    })(deBug = tubao.deBug || (tubao.deBug = {}));
+                return false;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(device, "isWxGame", {
+            /**
+             * 当前是否是微信小游戏平台
+             */
+            get: function () {
+                return egret.Capabilities.runtimeType == egret.RuntimeType.WXGAME;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(device, "isQQGame", {
+            /**
+             * 当前是否是qq小游戏平台
+             */
+            get: function () {
+                return egret.Capabilities.runtimeType == egret.RuntimeType.QQGAME;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(device, "isTTGame", {
+            /**
+             * 当前是否是字节跳动头条小游戏平台
+             */
+            get: function () {
+                return egret.Capabilities.runtimeType == egret.RuntimeType.TTGAME;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(device, "isKSGame", {
+            /**
+             * 当前是否是快手小游戏平台
+             */
+            get: function () {
+                return egret.Capabilities.runtimeType == egret.RuntimeType.KSGAME;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(device, "isQGame", {
+            /**
+             * 当前是否是小米轻游戏平台
+             */
+            get: function () {
+                return egret.Capabilities.runtimeType == egret.RuntimeType.QGAME;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(device, "isMobile", {
+            /**
+             * 是否是在手机上
+             * @returns {boolean}
+             * @constructor
+             */
+            get: function () {
+                return egret.Capabilities.isMobile;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(device, "isPC", {
+            /**
+             * 是否是在PC上
+             * @returns {boolean}
+             * @constructor
+             */
+            get: function () {
+                return !egret.Capabilities.isMobile;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(device, "isQQBrowser", {
+            /**
+             * 是否是QQ浏览器
+             * @returns {boolean}
+             * @constructor
+             */
+            get: function () {
+                return this.isHtml5 && navigator.userAgent.indexOf('MQQBrowser') != -1;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(device, "isIEBrowser", {
+            /**
+             * 是否是IE浏览器
+             * @returns {boolean}
+             * @constructor
+             */
+            get: function () {
+                return this.isHtml5 && navigator.userAgent.indexOf("MSIE") != -1;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(device, "isFirefoxBrowser", {
+            /**
+             * 是否是Firefox浏览器
+             * @returns {boolean}
+             * @constructor
+             */
+            get: function () {
+                return this.isHtml5 && navigator.userAgent.indexOf("Firefox") != -1;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(device, "isChromeBrowser", {
+            /**
+             * 是否是Chrome浏览器
+             * @returns {boolean}
+             * @constructor
+             */
+            get: function () {
+                return this.isHtml5 && navigator.userAgent.indexOf("Chrome") != -1;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(device, "isSafariBrowser", {
+            /**
+             * 是否是Safari浏览器
+             * @returns {boolean}
+             * @constructor
+             */
+            get: function () {
+                return this.isHtml5 && navigator.userAgent.indexOf("Safari") != -1;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(device, "isOperaBrowser", {
+            /**
+             * 是否是Opera浏览器
+             * @returns {boolean}
+             * @constructor
+             */
+            get: function () {
+                return this.isHtml5 && navigator.userAgent.indexOf("Opera") != -1;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(device, "DeviceOs", {
+            /**
+             * 得到设备系统 如：iOS/Android/WP7
+             */
+            get: function () {
+                var os = "";
+                var ua;
+                ua = this.isHtml5 ? navigator.userAgent.toLowerCase() : egret.Capabilities.os.toLowerCase();
+                if (ua.indexOf("ipod") != -1 || ua.indexOf("iphone") != -1 || ua.indexOf("ipad") != -1 || ua.indexOf("macintosh") != -1 || ua.indexOf("ios") != -1) {
+                    os = "ios";
+                }
+                else if (ua.indexOf("windows") != -1) {
+                    os = "windows";
+                }
+                else if (ua.indexOf("android") != -1) {
+                    os = "android";
+                }
+                else if (ua.indexOf("symbian") != -1) {
+                    os = "symbian";
+                }
+                else if (ua.indexOf("linux") != -1) {
+                    os = "linux";
+                }
+                return os;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        return device;
+    }());
+    tubao.device = device;
+    __reflect(device.prototype, "tubao.device");
 })(tubao || (tubao = {}));
 /// <reference path="./paint.ts" />
 var tubao;
@@ -7612,230 +7236,82 @@ var tubao;
     })(fields = tubao.fields || (tubao.fields = {}));
 })(tubao || (tubao = {}));
 /**
- * 设备信息
+ * 调试工具类
+ * new tubao.deBug.huanDong();
+ * new tubao.deBug.secondNewObject()
  */
 var tubao;
 (function (tubao) {
-    var device = (function () {
-        function device() {
-        }
-        Object.defineProperty(device, "isHtml5", {
-            /**
-             * 当前是否Html5版本
-             * @returns {boolean}
-             * @constructor
-             */
-            get: function () {
-                return egret.Capabilities.runtimeType == egret.RuntimeType.WEB;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(device, "isNative", {
-            /**
-             * 当前是否是Native版本
-             * @returns {boolean}
-             * @constructor
-             */
-            get: function () {
-                return egret.Capabilities.runtimeType == egret.RuntimeType.NATIVE;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(device, "isChannel", {
-            /**
-             * 当前是否渠道版本,微信，QQ,字节跳动，小米轻游戏
-             * @returns {boolean}
-             * @constructor
-             */
-            get: function () {
-                if (this.isWxGame || this.isQQGame || this.isTTGame || this.isQGame || this.isKSGame) {
-                    return true;
+    var deBug;
+    (function (deBug) {
+        /**
+         * 每秒创建的对象数量
+         */
+        var secondNewObject = (function () {
+            //显示对象数量
+            function secondNewObject() {
+                var _this = this;
+                this.objectNum = [];
+                var panel = new egret.TextField();
+                tubao.layer.LayerManager.UI_Message.addChild(panel);
+                panel.y = 150;
+                panel.height = 300;
+                panel.size = 15;
+                panel.textColor = 0xfff;
+                panel.touchEnabled = false;
+                panel.bold = true;
+                panel.background = true;
+                panel.backgroundColor = 0xffffff;
+                var count = egret.$hashCount;
+                setInterval(function () {
+                    var newCount = egret.$hashCount;
+                    var diff = newCount - count;
+                    count = newCount;
+                    console.log(diff);
+                    panel.text += "\n" + diff;
+                    _this.objectNum.push(diff);
+                }, 1000);
+                setInterval(function () {
+                    panel.text = "对象创建数量：";
+                }, 10000);
+            }
+            return secondNewObject;
+        }());
+        deBug.secondNewObject = secondNewObject;
+        __reflect(secondNewObject.prototype, "tubao.deBug.secondNewObject");
+        var huanDong = (function () {
+            //显示对象数量
+            function huanDong() {
+                this.huan = [egret.Ease.arguments];
+                this.huanString = [egret.Ease.arguments];
+                var a = 0;
+                for (var k in egret.Ease) {
+                    var panel = new egret.TextField();
+                    tubao.layer.LayerManager.UI_Message.addChild(panel);
+                    panel.x = 20;
+                    panel.y = a * 20;
+                    panel.size = 15;
+                    panel.textColor = 0xfff;
+                    panel.touchEnabled = false;
+                    panel.bold = true;
+                    panel.background = true;
+                    panel.backgroundColor = 0xffffff;
+                    panel.text = k + "-------------------------------------------";
+                    var kk = new eui.Image(RES.getRes("basics01_png"));
+                    kk.x = 100;
+                    kk.width = 20;
+                    kk.height = 20;
+                    kk.y = a * 20;
+                    tubao.layer.LayerManager.UI_Message.addChild(kk);
+                    egret.Tween.get(kk, { loop: true }).to({ x: 500 }, 1000, egret.Ease[k]).to({ alpha: 0 }, 1000, egret.Ease[k]);
+                    a++;
                 }
-                return false;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(device, "isWxGame", {
-            /**
-             * 当前是否是微信小游戏平台
-             */
-            get: function () {
-                return egret.Capabilities.runtimeType == egret.RuntimeType.WXGAME;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(device, "isQQGame", {
-            /**
-             * 当前是否是qq小游戏平台
-             */
-            get: function () {
-                return egret.Capabilities.runtimeType == egret.RuntimeType.QQGAME;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(device, "isTTGame", {
-            /**
-             * 当前是否是字节跳动头条小游戏平台
-             */
-            get: function () {
-                return egret.Capabilities.runtimeType == egret.RuntimeType.TTGAME;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(device, "isKSGame", {
-            /**
-             * 当前是否是快手小游戏平台
-             */
-            get: function () {
-                return egret.Capabilities.runtimeType == egret.RuntimeType.KSGAME;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(device, "isQGame", {
-            /**
-             * 当前是否是小米轻游戏平台
-             */
-            get: function () {
-                return egret.Capabilities.runtimeType == egret.RuntimeType.QGAME;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(device, "isMobile", {
-            /**
-             * 是否是在手机上
-             * @returns {boolean}
-             * @constructor
-             */
-            get: function () {
-                return egret.Capabilities.isMobile;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(device, "isPC", {
-            /**
-             * 是否是在PC上
-             * @returns {boolean}
-             * @constructor
-             */
-            get: function () {
-                return !egret.Capabilities.isMobile;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(device, "isQQBrowser", {
-            /**
-             * 是否是QQ浏览器
-             * @returns {boolean}
-             * @constructor
-             */
-            get: function () {
-                return this.isHtml5 && navigator.userAgent.indexOf('MQQBrowser') != -1;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(device, "isIEBrowser", {
-            /**
-             * 是否是IE浏览器
-             * @returns {boolean}
-             * @constructor
-             */
-            get: function () {
-                return this.isHtml5 && navigator.userAgent.indexOf("MSIE") != -1;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(device, "isFirefoxBrowser", {
-            /**
-             * 是否是Firefox浏览器
-             * @returns {boolean}
-             * @constructor
-             */
-            get: function () {
-                return this.isHtml5 && navigator.userAgent.indexOf("Firefox") != -1;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(device, "isChromeBrowser", {
-            /**
-             * 是否是Chrome浏览器
-             * @returns {boolean}
-             * @constructor
-             */
-            get: function () {
-                return this.isHtml5 && navigator.userAgent.indexOf("Chrome") != -1;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(device, "isSafariBrowser", {
-            /**
-             * 是否是Safari浏览器
-             * @returns {boolean}
-             * @constructor
-             */
-            get: function () {
-                return this.isHtml5 && navigator.userAgent.indexOf("Safari") != -1;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(device, "isOperaBrowser", {
-            /**
-             * 是否是Opera浏览器
-             * @returns {boolean}
-             * @constructor
-             */
-            get: function () {
-                return this.isHtml5 && navigator.userAgent.indexOf("Opera") != -1;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(device, "DeviceOs", {
-            /**
-             * 得到设备系统 如：iOS/Android/WP7
-             */
-            get: function () {
-                var os = "";
-                var ua;
-                ua = this.isHtml5 ? navigator.userAgent.toLowerCase() : egret.Capabilities.os.toLowerCase();
-                if (ua.indexOf("ipod") != -1 || ua.indexOf("iphone") != -1 || ua.indexOf("ipad") != -1 || ua.indexOf("macintosh") != -1 || ua.indexOf("ios") != -1) {
-                    os = "ios";
-                }
-                else if (ua.indexOf("windows") != -1) {
-                    os = "windows";
-                }
-                else if (ua.indexOf("android") != -1) {
-                    os = "android";
-                }
-                else if (ua.indexOf("symbian") != -1) {
-                    os = "symbian";
-                }
-                else if (ua.indexOf("linux") != -1) {
-                    os = "linux";
-                }
-                return os;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        return device;
-    }());
-    tubao.device = device;
-    __reflect(device.prototype, "tubao.device");
+            }
+            return huanDong;
+        }());
+        deBug.huanDong = huanDong;
+        __reflect(huanDong.prototype, "tubao.deBug.huanDong");
+    })(deBug = tubao.deBug || (tubao.deBug = {}));
 })(tubao || (tubao = {}));
 /// <reference path = "richTextFiledBase.ts" />
 /**
@@ -7959,36 +7435,302 @@ var tubao;
 var tubao;
 (function (tubao) {
     /**
-     * 一个点
+     * 时间日期工具
      */
-    var dot = (function (_super) {
-        __extends(dot, _super);
-        /**
-         * 一个点
-         * @param {number} x 定位x坐标
-         * @param {number} y 定位y坐标
-         * @param {number} color 颜色
-         */
-        function dot(x, y, color) {
-            var _this = _super.call(this) || this;
-            _this.size = 5;
-            _this.bgColor = color;
-            _this.borderColor = 0x666666;
-            _this.borderSize = 0;
-            _this.cornerRadius = 9;
-            _this.halfSize = Math.round(_this.size / 2);
-            _this.graphics.beginFill(_this.bgColor);
-            _this.graphics.lineStyle(_this.borderSize, _this.borderColor);
-            _this.graphics.drawCircle(_this.halfSize, _this.halfSize, _this.halfSize);
-            _this.graphics.endFill();
-            _this.x = x;
-            _this.y = y;
-            return _this;
+    var date = (function () {
+        function date() {
         }
-        return dot;
-    }(egret.Shape));
-    tubao.dot = dot;
-    __reflect(dot.prototype, "tubao.dot");
+        /**
+         * 根据秒数格式化字符串
+         * @param second 秒数
+         * @param type 1:00:00:00   2:yyyy-mm-dd h:m:s    3:00:00(分:秒)   4:xx天前，xx小时前，xx分钟前    6:00:00(时:分)
+         * @return
+         *
+         */
+        date.getFormatBySecond = function (second, type) {
+            if (type === void 0) { type = 1; }
+            var str = "";
+            switch (type) {
+                case 1:
+                    str = this.getFormatBySecond1(second);
+                    break;
+                case 2:
+                    str = this.getFormatBySecond2(second);
+                    break;
+                case 3:
+                    str = this.getFormatBySecond3(second);
+                    break;
+                case 4:
+                    str = this.getFormatBySecond4(second);
+                    break;
+                case 5:
+                    str = this.getFormatBySecond5(second);
+                    break;
+                case 6:
+                    str = this.getFormatBySecond6(second);
+                    break;
+            }
+            return str;
+        };
+        //1: 00:00:00
+        date.getFormatBySecond1 = function (t) {
+            if (t === void 0) { t = 0; }
+            var hourst = Math.floor(t / 3600);
+            var hours;
+            if (hourst == 0) {
+                hours = "00";
+            }
+            else {
+                if (hourst < 10)
+                    hours = "0" + hourst;
+                else
+                    hours = "" + hourst;
+            }
+            var minst = Math.floor((t - hourst * 3600) / 60);
+            var secondt = Math.floor((t - hourst * 3600) % 60);
+            var mins;
+            var sens;
+            if (minst == 0) {
+                mins = "00";
+            }
+            else if (minst < 10) {
+                mins = "0" + minst;
+            }
+            else {
+                mins = "" + minst;
+            }
+            if (secondt == 0) {
+                sens = "00";
+            }
+            else if (secondt < 10) {
+                sens = "0" + secondt;
+            }
+            else {
+                sens = "" + secondt;
+            }
+            return hours + ":" + mins + ":" + sens;
+        };
+        //3:00:00(分:秒)
+        date.getFormatBySecond3 = function (t) {
+            if (t === void 0) { t = 0; }
+            var hourst = Math.floor(t / 3600);
+            var minst = Math.floor((t - hourst * 3600) / 60);
+            var secondt = Math.floor((t - hourst * 3600) % 60);
+            var mins;
+            var sens;
+            if (minst == 0) {
+                mins = "00";
+            }
+            else if (minst < 10) {
+                mins = "0" + minst;
+            }
+            else {
+                mins = "" + minst;
+            }
+            if (secondt == 0) {
+                sens = "00";
+            }
+            else if (secondt < 10) {
+                sens = "0" + secondt;
+            }
+            else {
+                sens = "" + secondt;
+            }
+            return mins + ":" + sens;
+        };
+        //2:yyyy-mm-dd h:m:s
+        date.getFormatBySecond2 = function (time) {
+            var date = new Date(time);
+            var year = date.getFullYear();
+            var month = date.getMonth() + 1; //返回的月份从0-11；
+            var day = date.getDate();
+            var hours = date.getHours();
+            var minute = date.getMinutes();
+            var second = date.getSeconds();
+            return year + "-" + month + "-" + day + " " + hours + ":" + minute + ":" + second;
+        };
+        //4:xx天前，xx小时前，xx分钟前
+        date.getFormatBySecond4 = function (time) {
+            var t = Math.floor(time / 3600);
+            if (t > 0) {
+                if (t > 24) {
+                    return Math.floor(t / 24) + "天前";
+                }
+                else {
+                    return t + "小时前";
+                }
+            }
+            else {
+                return Math.floor(time / 60) + "分钟前";
+            }
+        };
+        date.getFormatBySecond5 = function (time) {
+            //每个时间单位所对应的秒数
+            var oneDay = 3600 * 24;
+            var oneHourst = 3600;
+            var oneMinst = 60;
+            var days = Math.floor(time / oneDay);
+            var hourst = Math.floor(time % oneDay / oneHourst);
+            var minst = Math.floor((time - hourst * oneHourst) / oneMinst); //Math.floor(time % oneDay % oneHourst / oneMinst);
+            var secondt = Math.floor((time - hourst * oneHourst) % oneMinst); //time;
+            var dayss = "";
+            var hourss = "";
+            var minss = "";
+            var secss = "";
+            if (time > 0) {
+                //天
+                if (days == 0) {
+                    dayss = "";
+                    //小时
+                    if (hourst == 0) {
+                        hourss = "";
+                        //分
+                        if (minst == 0) {
+                            minss = "";
+                            if (secondt == 0) {
+                                secss = "";
+                            }
+                            else if (secondt < 10) {
+                                secss = "0" + secondt + "秒";
+                            }
+                            else {
+                                secss = "" + secondt + "秒";
+                            }
+                            return secss;
+                        }
+                        else {
+                            minss = "" + minst + "分";
+                            if (secondt == 0) {
+                                secss = "";
+                            }
+                            else if (secondt < 10) {
+                                secss = "0" + secondt + "秒";
+                            }
+                            else {
+                                secss = "" + secondt + "秒";
+                            }
+                        }
+                        return minss + secss;
+                    }
+                    else {
+                        hourss = hourst + "小时";
+                        if (minst == 0) {
+                            minss = "";
+                            if (secondt == 0) {
+                                secss = "";
+                            }
+                            else if (secondt < 10) {
+                                secss = "0" + secondt + "秒";
+                            }
+                            else {
+                                secss = "" + secondt + "秒";
+                            }
+                            return secss;
+                        }
+                        else if (minst < 10) {
+                            minss = "0" + minst + "分";
+                        }
+                        else {
+                            minss = "" + minst + "分";
+                        }
+                        return hourss + minss;
+                    }
+                }
+                else {
+                    dayss = days + "天";
+                    if (hourst == 0) {
+                        hourss = "";
+                    }
+                    else {
+                        if (hourst < 10)
+                            hourss = "0" + hourst + "小时";
+                        else
+                            hourss = "" + hourst + "小时";
+                        ;
+                    }
+                    return dayss + hourss;
+                }
+            }
+            return "";
+        };
+        //6:00:00(时:分) 
+        date.getFormatBySecond6 = function (t) {
+            if (t === void 0) { t = 0; }
+            var hourst = Math.floor(t / 3600);
+            var minst = Math.floor((t - hourst * 3600) / 60);
+            var houers;
+            var mins;
+            if (hourst == 0) {
+                houers = "00";
+            }
+            else if (hourst < 10) {
+                houers = "0" + hourst;
+            }
+            else {
+                houers = "" + hourst;
+            }
+            if (minst == 0) {
+                mins = "00";
+            }
+            else if (minst < 10) {
+                mins = "0" + minst;
+            }
+            else {
+                mins = "" + minst;
+            }
+            return houers + ":" + mins;
+        };
+        /**
+         * 获取当前是周几
+         * ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"]
+         */
+        date.getDay = function (timestamp) {
+            var date = new Date(timestamp);
+            return date.getDay();
+        };
+        /**
+         * 判定两个时间是否是同一天
+         */
+        date.isSameDate = function (timestamp1, timestamp2) {
+            var date1 = new Date(timestamp1);
+            var date2 = new Date(timestamp2);
+            return date1.getFullYear() == date2.getFullYear()
+                && date1.getMonth() == date2.getMonth()
+                && date1.getDate() == date2.getDate();
+        };
+        /**
+         * 日期格式化
+         */
+        date.format = function (d, fmt) {
+            if (fmt === void 0) { fmt = "yyyy-MM-dd hh:mm:ss"; }
+            var o = {
+                "M+": d.getMonth() + 1,
+                "d+": d.getDate(),
+                "h+": d.getHours(),
+                "m+": d.getMinutes(),
+                "s+": d.getSeconds(),
+                "q+": Math.floor((d.getMonth() + 3) / 3),
+                "S": d.getMilliseconds() //millisecond
+            };
+            if (/(y+)/.test(fmt))
+                fmt = fmt.replace(RegExp.$1, (d.getFullYear() + "").substr(4 - RegExp.$1.length));
+            for (var k in o)
+                if (new RegExp("(" + k + ")").test(fmt))
+                    fmt = fmt.replace(RegExp.$1, RegExp.$1.length == 1 ? o[k] :
+                        ("00" + o[k]).substr(("" + o[k]).length));
+            return fmt;
+        };
+        /**
+         * 计算两个时间相差天数
+         */
+        date.dateDifference = function (timestamp1, timestamp2) {
+            var d_value = Math.abs(timestamp2 - timestamp1);
+            return Math.ceil(d_value / (24 * 60 * 60 * 1000));
+        };
+        return date;
+    }());
+    tubao.date = date;
+    __reflect(date.prototype, "tubao.date");
 })(tubao || (tubao = {}));
 /// <reference path = "layer.ts" />
 var tubao;
@@ -8246,67 +7988,143 @@ var tubao;
         __reflect(sceneManager.prototype, "tubao.layer.sceneManager");
     })(layer = tubao.layer || (tubao.layer = {}));
 })(tubao || (tubao = {}));
+/**
+ * cookie操作类
+ */
 var tubao;
 (function (tubao) {
-    /**
-     * 灰度图片类
-     */
-    var grayImg = (function (_super) {
-        __extends(grayImg, _super);
-        function grayImg() {
-            var _this = _super.call(this) || this;
-            _this.colorMatrix = [
-                0.3, 0.6, 0, 0, 0,
-                0.3, 0.6, 0, 0, 0,
-                0.3, 0.6, 0, 0, 0,
-                0, 0, 0, 1, 0
-            ];
-            _this.colorFlilter = new egret.ColorMatrixFilter(_this.colorMatrix);
-            return _this;
-            //颜色矩阵数组
-        }
-        Object.defineProperty(grayImg.prototype, "gray", {
-            /**
-             * 灰度
-             */
-            set: function (type) {
-                if (type) {
-                    //取消灰度
-                    this.filters = null;
-                    this.touchEnabled = true;
-                    this.alpha = 1;
+    var cookie;
+    (function (cookie) {
+        /**游戏的数据库标记 */
+        cookie.label = "Rabbit";
+        /**
+         * 特殊数据值操作存入前端数字数据，如果第二个参数存在就写入，不存在就查询
+         * @param value 查询的数据列表索引
+         * @param Str 写入的数据
+         *
+         */
+        function LocalStorageNum(Str0, Str1) {
+            if (Str1 === void 0) { Str1 = null; }
+            if (Str1) {
+                if (Str1) {
+                    return Number(egret.localStorage.setItem(String("Rabbit_" + cookie.label + "_" + Str0), String(Str1)));
+                    //第二个参数存在就写入
                 }
                 else {
-                    //灰度了
-                    this.filters = [this.colorFlilter];
-                    this.touchEnabled = false;
-                    this.alpha = 0.5;
+                    console.error("\u7F13\u5B58\u6570\u636E\u5199\u5165\u9519\u8BEF\uFF0Ckey\uFF1A" + Str0 + ",Str:" + Str1);
+                    return Number(egret.localStorage.setItem(String("Rabbit_" + cookie.label + "_" + Str0), String(0)));
                 }
-            },
-            enumerable: true,
-            configurable: true
-        });
-        return grayImg;
-    }(eui.Image));
-    tubao.grayImg = grayImg;
-    __reflect(grayImg.prototype, "tubao.grayImg");
-    /**
-     * 显示对象灰度工具
-     */
-    function gray(dis) {
-        var colorMatrix = [
-            0.3, 0.6, 0, 0, 0,
-            0.3, 0.6, 0, 0, 0,
-            0.3, 0.6, 0, 0, 0,
-            0, 0, 0, 1, 0
-        ];
-        //灰色矩阵
-        var colorFlilter;
-        //滤镜
-        dis.filters = [new egret.ColorMatrixFilter(colorMatrix)];
-        //设置灰度
-    }
-    tubao.gray = gray;
+            }
+            else {
+                if (egret.localStorage.getItem(String("Rabbit_" + cookie.label + "_" + Str0))) {
+                    return Number(egret.localStorage.getItem(String("Rabbit_" + cookie.label + "_" + Str0)));
+                    //第二个参数不存在就查询
+                }
+                else {
+                    return 0;
+                }
+            }
+        }
+        cookie.LocalStorageNum = LocalStorageNum;
+        /**
+         * 获取localStorage缓存数据
+         * @param {string} key 值对
+         * @return {string} 这个key对应的值
+         */
+        function getLocal(key) {
+            var data = egret.localStorage.getItem(key);
+            if (data) {
+                return data;
+            }
+            return "";
+        }
+        cookie.getLocal = getLocal;
+        /**
+         * 设置localStorage缓存数据
+         * @param {string} key 值对
+         * @return {string} 这个key对应的值
+         */
+        function setLocal(key, value) {
+            return egret.localStorage.setItem(key, value);
+        }
+        cookie.setLocal = setLocal;
+        /**
+         * cookie操作，设置一个cookie
+         * @param cname 设置cookie的id
+         * @param cvalue 设置cookie的值
+         * @param exdays 设置cookie在几分钟后失效
+         */
+        function setCookie(cname, cvalue, exdays) {
+            if (tubao.device.isChannel) {
+                //渠道处理
+                platform.setStorage(cname, cvalue);
+            }
+            else {
+                //浏览器平台
+                var d = new Date();
+                d.setUTCMinutes(d.getUTCMinutes() + exdays);
+                document.cookie = cname + "=" + cvalue + "; expires=" + d.toUTCString();
+            }
+        }
+        cookie.setCookie = setCookie;
+        /**
+         * cookie操作，删除一个cookie
+         * @param cname 设置cookie的id
+         * @param cvalue 设置cookie的值
+         * @param exdays 设置cookie在几分钟后失效
+         */
+        function delCookie(cname) {
+            if (tubao.device.isChannel) {
+                //渠道处理
+                platform.setStorage(cname, '');
+            }
+            else {
+                //浏览器平台
+                document.cookie = cname + "=" + "true" + "; expires=Sat, 27 Nov 2010 10:39:38 GMT";
+            }
+        }
+        cookie.delCookie = delCookie;
+        /**
+         * 查询一个cookie的值，不存在返回false
+         * @param {string} cname cookie名
+        */
+        function getCookie(cname) {
+            //查询cookie
+            if (tubao.device.isChannel) {
+                //渠道处理
+                if (platform.getStorage(cname) == '') {
+                    return false;
+                }
+                return platform.getStorage(cname);
+            }
+            else {
+                //不是微信平台
+                var name = cname + "=";
+                var ca = document.cookie.split(';');
+                for (var i = 0; i < ca.length; i++) {
+                    var c = ca[i].trim();
+                    if (c.indexOf(name) == 0)
+                        return c.substring(name.length, c.length);
+                }
+                return false;
+            }
+        }
+        cookie.getCookie = getCookie;
+        /**
+         * 查询一个cookie的值，不存在返回false
+         * @param {string} cname cookie名
+        */
+        function getCookieNum(cname) {
+            var a = getCookie(cname);
+            if (a) {
+                return a;
+            }
+            else {
+                return 0;
+            }
+        }
+        cookie.getCookieNum = getCookieNum;
+    })(cookie = tubao.cookie || (tubao.cookie = {}));
 })(tubao || (tubao = {}));
 var tubao;
 (function (tubao) {
@@ -8354,6 +8172,7 @@ var tubao;
             };
             /**
              * 暂停
+             * 请尽量避免使用，不可和其他api能力混用，且在运行时仅可运行一次
              */
             bg.prototype.pause = function () {
                 if (!this._currSoundChannel) {
@@ -8364,6 +8183,7 @@ var tubao;
             };
             /**
              * 恢复
+             * 请尽量避免使用，不可和其他api能力混用，且在运行时仅可运行一次
              */
             bg.prototype.resume = function () {
                 if (!this._currSoundChannel) {
@@ -9104,26 +8924,26 @@ var tubao;
 })(tubao || (tubao = {}));
 var tubao;
 (function (tubao) {
-    var list;
-    (function (list) {
+    var video;
+    (function (video) {
         /**
-         * 下拉列表的单个项
+         * 视频事件类
          */
-        var downListNape = (function (_super) {
-            __extends(downListNape, _super);
-            function downListNape(Nur, Name) {
-                var _this = _super.call(this) || this;
-                _this.nur = null;
-                _this.Name = null;
-                _this.skinName = "tubao.list.downListNapeSkin";
-                _this.nur = Nur;
-                _this.Name = Name;
-                _this.lab_nr.text = Name + "(" + Nur + ")";
-                return _this;
+        var videoEvent = (function (_super) {
+            __extends(videoEvent, _super);
+            //视频名字
+            function videoEvent(type, bubbles, cancelable) {
+                if (bubbles === void 0) { bubbles = false; }
+                if (cancelable === void 0) { cancelable = false; }
+                return _super.call(this, type, bubbles, cancelable) || this;
             }
-            return downListNape;
-        }(eui.Component));
-        list.downListNape = downListNape;
-        __reflect(downListNape.prototype, "tubao.list.downListNape");
-    })(list = tubao.list || (tubao.list = {}));
+            /**视频播放开始 */
+            videoEvent.videoPlay = "播放开始";
+            /**视频播放结束 */
+            videoEvent.videoEnd = "播放结束";
+            return videoEvent;
+        }(egret.Event));
+        video.videoEvent = videoEvent;
+        __reflect(videoEvent.prototype, "tubao.video.videoEvent");
+    })(video = tubao.video || (tubao.video = {}));
 })(tubao || (tubao = {}));
