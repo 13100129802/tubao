@@ -88,7 +88,7 @@ Egret 项目使用 TypeScirpt 语言来开发。TypeScript 是 JavaScript 的超
 # 学习
 
 * 访问B站观看 [兔宝核芯框架基础入门教程](https://www.bilibili.com/video/BV1eQ9vYYE77/) 从入门到擅长，全面讲解tubao.js所有基础概念。
-* 访问 [文档](https://core.tubao.cc/doc/index.html) 获取框架的使用文档
+* 访问 [文档](https://core.tubao.cc/doc/) 获取框架的使用文档
 * 访问 [API](http://core.tubao.cc/api/index.html) 获取API的使用文档
 
 
